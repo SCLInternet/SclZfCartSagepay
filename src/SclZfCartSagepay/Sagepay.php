@@ -2,14 +2,15 @@
 
 namespace SclZfCartSagepay;
 
-use SclZfCartPayment\PaymentSystemInterface;
+use SclZfCartPayment\PaymentMethodInterface;
+use Zend\Form\Form;
 
 /**
- * The payment systems to intgrate Sagepay into SclZfCartPayment
+ * The payment method to intgrate Sagepay into SclZfCartPayment
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class Sagepay implements PaymentSystemInterface
+class Sagepay implements PaymentMethodInterface
 {
     /**
      * {@inheritDoc}
