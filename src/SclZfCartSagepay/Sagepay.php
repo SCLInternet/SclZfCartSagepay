@@ -23,12 +23,37 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
+     * 
+     * @param Form $form
+     * @param string $name
+     * @param string $value
+     */
+    private function addHiddenField(Form $form, $name, $value)
+    {
+        $form->add(
+            array(
+                'name' => $name,
+                'type' => 'Zend\Form\Element\Hidden',
+                'attributes' => array(
+                    'value' => $value
+                )
+            )
+        );
+    }
+
+    /**
      * {@inheritDoc}
      *
      * @param Form $form
      */
     public function updateCompleteForm(Form $form)
     {
+        $form->setAttribute('action', 'sagepay_url');
+
+        $this->addHiddenField($form, 'VPSProtocol', '3.00'); 
+        $this->addHiddenField($form, 'TxType', 'PAYMENT');
+        $this->addHiddenField($form, 'Vendor Name', 'asfg');
+        $this->addHiddenField($form, 'Crypt', 'secretshit');
     }
 
     /**
