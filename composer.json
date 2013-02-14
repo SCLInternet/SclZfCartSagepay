@@ -1,0 +1,31 @@
+{
+    "name": "sclinternet/scl-zf-cart-sagepay",
+    "description": "The payment module for SclZfCart",
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/SCLInternet/SclZfCartSagepay",
+    "authors": [
+        {
+            "name": "Tom Oram",
+            "email": "tom@x2k.co.uk",
+            "homepage": "http://github.com/tomphp"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3",
+        "zendframework/zendframework": "2.*",
+        "zf-commons/zfc-user-doctrine-orm": "dev-master",
+        "sclinternet/scl-zf-cart": "dev-master",
+        "sclinternet/scl-zf-cart-payment": "dev-master"
+    },
+    "require-dev": {
+        "phpmd/phpmd" : "1.4.0",
+        "squizlabs/php_codesniffer": "1.*"
+    },
+    "autoload": {
+        "psr-0": {
+            "SclZfCartSagepay\\": "src/"
+        }
+    }
+
+}
