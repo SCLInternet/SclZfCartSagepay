@@ -57,8 +57,8 @@ class Module implements
     public function getServiceConfig()
     {
         return array(
-            'invokables' => array(
-                'SclZfCartSagepay\Sagepay' => 'SclZfCartSagepay\Sagepay',
+            'factories' => array(
+                'SclZfCartSagepay\Sagepay' => 'SclZfCartSagepay\Service\SagepayFactory',
             ),
         );
     }
