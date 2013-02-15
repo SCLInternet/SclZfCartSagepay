@@ -59,6 +59,7 @@ class Module implements
         return array(
             'factories' => array(
                 'SclZfCartSagepay\Sagepay' => 'SclZfCartSagepay\Service\SagepayFactory',
+                'SclZfCartSagepay\DataProvider' => 'SclZfCartSagepay\Service\DataProviderFactory',
             ),
         );
     }

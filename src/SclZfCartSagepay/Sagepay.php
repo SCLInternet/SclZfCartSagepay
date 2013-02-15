@@ -12,57 +12,17 @@ use Zend\Form\Form;
  */
 class Sagepay implements PaymentMethodInterface
 {
-    const CONFIG_VERSION       = 'version';
-    const CONFIG_LIVE          = 'live';
-    const CONFIG_VSP_ACCOUNT   = 'vsp_account';
-    const CONFIG_CONNECTION    = 'connection';
-    const CONFIG_LIVE_SETTINGS = 'live';
-    const CONFIG_TEST_SETTINGS = 'test';
-    const CONFIG_URL           = 'url';
-    const CONFIG_PASSWORD      = 'encryption_password';
+    /**
+     * @var DataProvider
+     */
+    private $provider;
 
     /**
-     * The sagepay protocol version
-     *
-     * @var string
+     * @param DataProvider $provider
      */
-    private $version;
-
-    /**
-     * 
-     * @var string
-     */
-    private $vspAccount;
-
-    /**
-     * 
-     * @var string
-     */
-    private $encryptionPassword;
-
-    /**
-     * 
-     * @var string
-     */
-    private $url;
-
-    /**
-     * 
-     * @param array $config
-     */
-    public function __construct(array $config)
+    public function __construct(DataProvider $provider)
     {
-        $this->version = (string) $config[self::CONFIG_VERSION];
-        $this->vspAccount = (string) $config[self::CONFIG_VSP_ACCOUNT];
-
-        if ($config[self::CONFIG_LIVE]) {
-            $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_LIVE_SETTINGS];
-        } else {
-            $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_TEST_SETTINGS];
-        }
-
-        $this->encryptionPassword = (string) $settings[self::CONFIG_PASSWORD];
-        $this->url = (string) $settings[self::CONFIG_URL]; 
+        $this->provider = $provider;
     }
 
     /**
@@ -102,11 +62,11 @@ class Sagepay implements PaymentMethodInterface
      */
     public function updateCompleteForm(Form $form)
     {
-        $form->setAttribute('action', 'sagepay_url');
+        $form->setAttribute('action', $this->provider->getUrl());
 
-        $this->addHiddenField($form, 'VPSProtocol', '3.00'); 
+        $this->addHiddenField($form, 'VPSProtocol', $this->provider->getVersion()); 
         $this->addHiddenField($form, 'TxType', 'PAYMENT');
-        $this->addHiddenField($form, 'Vendor Name', 'asfg');
+        $this->addHiddenField($form, 'Vendor Name', $this->provider->getAccount());
         $this->addHiddenField($form, 'Crypt', 'secretshit');
     }
 

@@ -12,8 +12,6 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class SagepayFactory implements FactoryInterface
 {
-    const CONFIG_KEY = 'scl_zf_cart_sagepay';
-
     /**
      * Create an instance of {@see Sagepay}.
      *
@@ -22,10 +20,8 @@ class SagepayFactory implements FactoryInterface
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $config = $serviceLocator->get('Config');
+        $provider = $serviceLocator->get('SclZfCartSagepay\DataProvider');
 
-        $config = $config[self::CONFIG_KEY];
-
-        return new Sagepay($config);
+        return new Sagepay($provider);
     }
 }
