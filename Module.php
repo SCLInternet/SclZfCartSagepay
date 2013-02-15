@@ -57,9 +57,13 @@ class Module implements
     public function getServiceConfig()
     {
         return array(
+            'invokables' => array(
+                'SclZfCartSagepay\Data\CryptData' => 'SclZfCartSagepay\Data\CryptData',
+            ),
             'factories' => array(
-                'SclZfCartSagepay\Sagepay' => 'SclZfCartSagepay\Service\SagepayFactory',
-                'SclZfCartSagepay\DataProvider' => 'SclZfCartSagepay\Service\DataProviderFactory',
+                'SclZfCartSagepay\BlockCipher'       => 'SclZfCartSagepay\Service\BlockCipherFactory',
+                'SclZfCartSagepay\Sagepay'           => 'SclZfCartSagepay\Service\SagepayFactory',
+                'SclZfCartSagepay\Data\DataProvider' => 'SclZfCartSagepay\Service\DataProviderFactory',
             ),
         );
     }

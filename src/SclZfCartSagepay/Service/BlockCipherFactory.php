@@ -1,27 +1,28 @@
 <?php
 namespace SclZfCartSagepay\Service;
 
-use SclZfCartSagepay\Sagepay;
+use Zend\Crypt\BlockCipher;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Factory for creating {@see Sagepay} objects.
+ * Factory for creating the Zend BlockCipher which can use used for encryption.
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class SagepayFactory implements FactoryInterface
+class BlockCipherFactory implements FactoryInterface
 {
     /**
-     * Create an instance of {@see Sagepay}.
+     * Creates a BlockCipher
      *
      * @param ServiceLocatorInterface
-     * @return Sagepay
+     * @return BlockCipher
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $provider = $serviceLocator->get('SclZfCartSagepay\Data\DataProvider');
-
-        return new Sagepay($provider);
+        return BlockCipher::factory(
+            'mcrypt',
+            array('algo' => 'aes')
+        );
     }
 }

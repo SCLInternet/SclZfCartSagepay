@@ -2,7 +2,9 @@
 
 namespace SclZfCartSagepay;
 
+use SclZfCart\Cart;
 use SclZfCartPayment\PaymentMethodInterface;
+use SclZfCartSagepay\Data\DataProvider;
 use Zend\Form\Form;
 
 /**
@@ -12,6 +14,11 @@ use Zend\Form\Form;
  */
 class Sagepay implements PaymentMethodInterface
 {
+    const VAR_PROTOCOL = 'VPSProtocol';
+    const VAR_TYPE     = 'PAYMENT';
+    const VAR_ACCOUNT  = 'Vendor Name';
+    const VAR_CRYPT    = 'Crypt';
+
     /**
      * @var DataProvider
      */
@@ -58,16 +65,19 @@ class Sagepay implements PaymentMethodInterface
      * {@inheritDoc}
      *
      * @param Form $form
+     * @param Cart $cart
      * @todo Use a CompleteForm object instead of Form
      */
-    public function updateCompleteForm(Form $form)
+    public function updateCompleteForm(Form $form, Cart $cart)
     {
+        $this->provider->setCart($cart);
+
         $form->setAttribute('action', $this->provider->getUrl());
 
-        $this->addHiddenField($form, 'VPSProtocol', $this->provider->getVersion()); 
-        $this->addHiddenField($form, 'TxType', 'PAYMENT');
-        $this->addHiddenField($form, 'Vendor Name', $this->provider->getAccount());
-        $this->addHiddenField($form, 'Crypt', 'secretshit');
+        $this->addHiddenField($form, self::VAR_PROTOCOL, $this->provider->getVersion()); 
+        $this->addHiddenField($form, self::VAR_TYPE, 'PAYMENT');
+        $this->addHiddenField($form, self::VAR_ACCOUNT, $this->provider->getAccount());
+        $this->addHiddenField($form, self::VAR_CRYPT, $this->provider->getCrypt());
     }
 
     /**

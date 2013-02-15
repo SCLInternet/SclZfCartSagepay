@@ -1,7 +1,15 @@
 <?php
 
-namespace SclZfCartSagepay;
+namespace SclZfCartSagepay\Data;
 
+use SclZfCart\Cart;
+use Zend\Crypt\BlockCipher;
+
+/**
+ * Collects up the data that is needed for Sagepay and formats it as required.
+ *
+ * @author Tom Oram <tom@scl.co.uk>
+ */
 class DataProvider
 {
     const CONFIG_VERSION       = 'version';
@@ -30,19 +38,31 @@ class DataProvider
      * 
      * @var string
      */
-    private $encryptionPassword;
+    private $url;
 
     /**
      * 
-     * @var string
+     * @var Cart
      */
-    private $url;
+    private $cart;
+
+    /**
+     * 
+     * @var BlockCipher
+     */
+    private $blockCipher;
+
+    /**
+     * 
+     * @var CryptData
+     */
+    private $cryptData;
 
     /**
      * 
      * @param array $config
      */
-    public function __construct(array $config)
+    public function __construct(array $config, BlockCipher $blockCipher, CryptData $cryptData)
     {
         $this->version = (string) $config[self::CONFIG_VERSION];
         $this->vspAccount = (string) $config[self::CONFIG_VSP_ACCOUNT];
@@ -53,8 +73,21 @@ class DataProvider
             $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_TEST_SETTINGS];
         }
 
-        $this->encryptionPassword = (string) $settings[self::CONFIG_PASSWORD];
         $this->url = (string) $settings[self::CONFIG_URL];
+
+        $blockCipher->setKey((string) $settings[self::CONFIG_PASSWORD]);
+
+        $this->blockCipher = $blockCipher;
+        $this->cryptData = $cryptData;
+    }
+
+    /**
+     *
+     * @param Cart $cart
+     */
+    public function setCart(Cart $cart)
+    {
+        $this->cart = $cart;
     }
 
     /**
@@ -85,10 +118,15 @@ class DataProvider
     }
 
     /**
+     *
      * @return string
      */
     public function getCrypt()
     {
-        
+        $this->cryptData->add('field', 'value');
+
+        $encrypted = $this->blockCipher->encrypt((string) $this->cryptData);
+
+        return base64_encode($encrypted);
     }
 }

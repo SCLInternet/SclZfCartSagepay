@@ -1,7 +1,7 @@
 <?php
 namespace SclZfCartSagepay\Service;
 
-use SclZfCartSagepay\DataProvider;
+use SclZfCartSagepay\Data\DataProvider;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
@@ -26,6 +26,9 @@ class DataProviderFactory implements FactoryInterface
 
         $config = $config[self::CONFIG_KEY];
 
-        return new DataProvider($config);
+        $blockCipher = $serviceLocator->get('SclZfCartSagepay\BlockCipher');
+        $cryptData = $serviceLocator->get('SclZfCartSagepay\Data\CryptData');
+
+        return new DataProvider($config, $blockCipher, $cryptData);
     }
 }
