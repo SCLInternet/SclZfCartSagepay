@@ -22,7 +22,6 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers SclZfCartSagepay\Service\SagepayFactory::createService
-     * @todo   Implement testCreateService().
      */
     public function testCreateService()
     {
