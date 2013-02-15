@@ -39,7 +39,7 @@ class Sagepay implements PaymentMethodInterface
      */
     public function name()
     {
-        return 'Sage Pay - Online credit/debit cart payment';
+        return $this->provider->getName();
     }
 
     /**

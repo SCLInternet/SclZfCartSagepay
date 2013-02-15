@@ -12,6 +12,7 @@ use Zend\Crypt\BlockCipher;
  */
 class DataProvider
 {
+    const CONFIG_NAME          = 'name';
     const CONFIG_VERSION       = 'version';
     const CONFIG_LIVE          = 'live';
     const CONFIG_VSP_ACCOUNT   = 'vsp_account';
@@ -20,6 +21,13 @@ class DataProvider
     const CONFIG_TEST_SETTINGS = 'test';
     const CONFIG_URL           = 'url';
     const CONFIG_PASSWORD      = 'encryption_password';
+
+    /**
+     * The name of this payment method.
+     * 
+     * @var string
+     */
+    private $name;
 
     /**
      * The sagepay protocol version
@@ -64,7 +72,10 @@ class DataProvider
      */
     public function __construct(array $config, BlockCipher $blockCipher, CryptData $cryptData)
     {
+        $this->name = (string) $config[self::CONFIG_NAME];
+
         $this->version = (string) $config[self::CONFIG_VERSION];
+
         $this->vspAccount = (string) $config[self::CONFIG_VSP_ACCOUNT];
 
         if ($config[self::CONFIG_LIVE]) {
@@ -88,6 +99,14 @@ class DataProvider
     public function setCart(Cart $cart)
     {
         $this->cart = $cart;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**

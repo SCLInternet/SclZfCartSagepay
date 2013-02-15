@@ -2,6 +2,7 @@
 return array(
     'scl_zf_cart_sagepay' => array(
         'live'        => false,
+        'name'        => 'Sage Pay - Online credit/debit cart payment',
         'vsp_account' => '',
         'version'     => '3.00',
         'connection'  => array(
