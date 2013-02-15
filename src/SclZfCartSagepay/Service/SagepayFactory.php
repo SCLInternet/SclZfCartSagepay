@@ -10,7 +10,7 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class SecpayFactory implements FactoryInterface
+class SagepayFactory implements FactoryInterface
 {
     const CONFIG_KEY = 'scl_zf_cart_sagepay';
 

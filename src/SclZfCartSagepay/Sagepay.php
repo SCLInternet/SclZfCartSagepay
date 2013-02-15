@@ -55,10 +55,10 @@ class Sagepay implements PaymentMethodInterface
         $this->version = (string) $config[self::CONFIG_VERSION];
         $this->vspAccount = (string) $config[self::CONFIG_VSP_ACCOUNT];
 
-        if ($config[self::LIVE]) {
-            $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_LIVE];
+        if ($config[self::CONFIG_LIVE]) {
+            $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_LIVE_SETTINGS];
         } else {
-            $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_TEST];
+            $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_TEST_SETTINGS];
         }
 
         $this->encryptionPassword = (string) $settings[self::CONFIG_PASSWORD];
