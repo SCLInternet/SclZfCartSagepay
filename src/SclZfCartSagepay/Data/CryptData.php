@@ -18,11 +18,13 @@ class CryptData
      * @todo Look into string encoding.
      * @param string $field
      * @param string $value
-     * @return void
+     * @return CryptData
      */
     public function add($field, $value)
     {
         $this->data[] = $field . '=' . $value;
+
+        return $this;
     }
 
     /**
