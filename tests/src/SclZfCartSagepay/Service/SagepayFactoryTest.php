@@ -21,22 +21,24 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @covers SclZfCartSagepay\Service\SagepayFactory::createService
      * @todo   Implement testCreateService().
      */
     public function testCreateService()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
+
+        $dataProvider = $this->getMockBuilder('SclZfCartSagepay\Data\DataProvider')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $serviceLocator->expects($this->once())
+            ->method('get')
+            ->with($this->equalTo('SclZfCartSagepay\Data\DataProvider'))
+            ->will($this->returnValue($dataProvider));
+
+        $cipher = $this->object->createService($serviceLocator);
+
+        $this->assertInstanceOf('SclZfCartSagepay\Sagepay', $cipher);
     }
 }

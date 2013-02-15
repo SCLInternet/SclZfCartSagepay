@@ -24,23 +24,16 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @covers SclZfCartSagepay\Sagepay::name
      * @todo   Implement testName().
      */
     public function testName()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->dataProvider->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('Sagepay Name'));
+
+        $this->assertEquals('Sagepay Name', $this->object->name());
     }
 
     /**

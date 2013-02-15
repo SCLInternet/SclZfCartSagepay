@@ -6,6 +6,23 @@ namespace SclZfCartSagepay\Data;
  */
 class DataProviderTest extends \PHPUnit_Framework_TestCase
 {
+    private $config = array(
+        'live'        => false,
+        'name'        => 'Sagepay Payment Method',
+        'vsp_account' => '',
+        'version'     => '3.00',
+        'connection'  => array(
+            'live' => array(
+                'url' => 'https://live.sagepay.com/gateway/service/vspform-register.vsp',
+                'encryption_password' => '',
+            ),
+            'test' => array(
+                'url' => 'https://test.sagepay.com/gateway/service/vspform-register.vsp',
+                'encryption_password' => '',
+            ),
+        ),
+    );
+    
     /**
      * @var DataProvider
      */
@@ -15,100 +32,69 @@ class DataProviderTest extends \PHPUnit_Framework_TestCase
 
     protected $cryptData;
 
+    private function setUpObject(array $config)
+    {
+        $this->object = new DataProvider($config, $this->blockCipher, $this->cryptData);
+    }
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
      */
     protected function setUp()
     {
-        $config = array(
-            'live'        => false,
-            'vsp_account' => '',
-            'version'     => '3.00',
-            'connection'  => array(
-                'live' => array(
-                    'url' => 'https://live.sagepay.com/gateway/service/vspform-register.vsp',
-                    'encryption_password' => '',
-                ),
-                'test' => array(
-                    'url' => 'https://test.sagepay.com/gateway/service/vspform-register.vsp',
-                    'encryption_password' => '',
-                ),
-            ),
-        );
-
         $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')->disableOriginalConstructor()->getMock();
 
         $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
-    
-        $this->object = new DataProvider($config, $this->blockCipher, $this->cryptData);;
-    }
 
-    /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
-     * @covers SclZfCartSagepay\Data\DataProvider::setCart
-     * @todo   Implement testSetCart().
-     */
-    public function testSetCart()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->setUpObject($this->config);
     }
 
     /**
      * @covers SclZfCartSagepay\Data\DataProvider::getVersion
-     * @todo   Implement testGetVersion().
      */
     public function testGetVersion()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertEquals($this->config['version'], $this->object->getVersion());
     }
 
     /**
      * @covers SclZfCartSagepay\Data\DataProvider::getAccount
-     * @todo   Implement testGetAccount().
      */
     public function testGetAccount()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertEquals($this->config['vsp_account'], $this->object->getAccount());
     }
 
     /**
      * @covers SclZfCartSagepay\Data\DataProvider::getUrl
-     * @todo   Implement testGetUrl().
      */
     public function testGetUrl()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertEquals($this->config['connection']['test']['url'], $this->object->getUrl());
     }
 
     /**
      * @covers SclZfCartSagepay\Data\DataProvider::getCrypt
+     * @covers SclZfCartSagepay\Data\DataProvider::setCart
      * @todo   Implement testGetCrypt().
      */
     public function testGetCrypt()
     {
+        $this->cryptData->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('data_string'));
+
+        $this->blockCipher->expects($this->once())
+            ->method('encrypt')
+            ->with($this->equalTo('data_string'))
+            ->will($this->returnValue('encrypted_string'));
+        
+        $this->assertEquals(base64_encode('encrypted_string'), $this->object->getCrypt());
+        
         // Remove the following lines when you implement this test.
         $this->markTestIncomplete(
-          'This test has not been implemented yet.'
+          'Need to test the correct data is added and test the password'
         );
     }
 }

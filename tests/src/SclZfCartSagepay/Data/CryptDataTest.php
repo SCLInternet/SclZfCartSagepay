@@ -21,34 +21,15 @@ class CryptDataTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Tears down the fixture, for example, closes a network connection.
-     * This method is called after a test is executed.
-     */
-    protected function tearDown()
-    {
-    }
-
-    /**
      * @covers SclZfCartSagepay\Data\CryptData::add
-     * @todo   Implement testAdd().
+     * @covers SclZfCartSagepay\Data\CryptData::__toString
+     * @todo   Test encoding
      */
     public function testAdd()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
-    }
+        $this->object->add('field1', 'value1')
+            ->add('field2', 'value2');
 
-    /**
-     * @covers SclZfCartSagepay\Data\CryptData::__toString
-     * @todo   Implement test__toString().
-     */
-    public function test__toString()
-    {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->assertEquals('field1=value1&field2=value2', (string) $this->object);
     }
 }
