@@ -15,9 +15,11 @@ use Zend\Form\Form;
 class Sagepay implements PaymentMethodInterface
 {
     const VAR_PROTOCOL = 'VPSProtocol';
-    const VAR_TYPE     = 'PAYMENT';
-    const VAR_ACCOUNT  = 'Vendor Name';
+    const VAR_TYPE     = 'TxType';
+    const VAR_ACCOUNT  = 'Vendor';
     const VAR_CRYPT    = 'Crypt';
+    
+    const TX_TYPE_PAYMENT = 'PAYMENT';
 
     /**
      * @var DataProvider
@@ -75,7 +77,7 @@ class Sagepay implements PaymentMethodInterface
         $form->setAttribute('action', $this->provider->getUrl());
 
         $this->addHiddenField($form, self::VAR_PROTOCOL, $this->provider->getVersion());
-        $this->addHiddenField($form, self::VAR_TYPE, 'PAYMENT');
+        $this->addHiddenField($form, self::VAR_TYPE, self::TX_TYPE_PAYMENT);
         $this->addHiddenField($form, self::VAR_ACCOUNT, $this->provider->getAccount());
         $this->addHiddenField($form, self::VAR_CRYPT, $this->provider->getCrypt());
     }
