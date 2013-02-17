@@ -26,9 +26,6 @@ class DataProviderFactory implements FactoryInterface
 
         $config = $config[self::CONFIG_KEY];
 
-        $blockCipher = $serviceLocator->get('SclZfCartSagepay\BlockCipher');
-        $cryptData = $serviceLocator->get('SclZfCartSagepay\Data\CryptData');
-
-        return new DataProvider($config, $blockCipher, $cryptData);
+        return new DataProvider($config);
     }
 }

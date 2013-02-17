@@ -31,13 +31,29 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $serviceLocator->expects($this->once())
+        $serviceLocator->expects($this->at(0))
             ->method('get')
             ->with($this->equalTo('SclZfCartSagepay\Data\DataProvider'))
             ->will($this->returnValue($dataProvider));
 
-        $cipher = $this->object->createService($serviceLocator);
+        $blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->assertInstanceOf('SclZfCartSagepay\Sagepay', $cipher);
+        $serviceLocator->expects($this->at(1))
+            ->method('get')
+            ->with($this->equalTo('SclZfCartSagepay\BlockCipher'))
+            ->will($this->returnValue($blockCipher));
+
+        $cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
+
+        $serviceLocator->expects($this->at(2))
+            ->method('get')
+            ->with($this->equalTo('SclZfCartSagepay\Data\CryptData'))
+            ->will($this->returnValue($cryptData));
+
+        $sagepay = $this->object->createService($serviceLocator);
+
+        $this->assertInstanceOf('SclZfCartSagepay\Sagepay', $sagepay);
     }
 }

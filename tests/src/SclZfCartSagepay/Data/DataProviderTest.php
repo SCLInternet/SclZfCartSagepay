@@ -6,35 +6,16 @@ namespace SclZfCartSagepay\Data;
  */
 class DataProviderTest extends \PHPUnit_Framework_TestCase
 {
-    private $config = array(
-        'live'        => false,
-        'name'        => 'Sagepay Payment Method',
-        'vsp_account' => '',
-        'version'     => '3.00',
-        'connection'  => array(
-            'live' => array(
-                'url' => 'https://live.sagepay.com/gateway/service/vspform-register.vsp',
-                'encryption_password' => '',
-            ),
-            'test' => array(
-                'url' => 'https://test.sagepay.com/gateway/service/vspform-register.vsp',
-                'encryption_password' => '',
-            ),
-        ),
-    );
+    private $config;
     
     /**
      * @var DataProvider
      */
     protected $object;
 
-    protected $blockCipher;
-
-    protected $cryptData;
-
     private function setUpObject(array $config)
     {
-        $this->object = new DataProvider($config, $this->blockCipher, $this->cryptData);
+        $this->object = new DataProvider($config);
     }
 
     /**
@@ -43,9 +24,8 @@ class DataProviderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')->disableOriginalConstructor()->getMock();
-
-        $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
+        $config = include __DIR__ . '/../../../../config/module.config.php';
+        $this->config = $config['scl_zf_cart_sagepay'];
 
         $this->setUpObject($this->config);
     }
@@ -55,7 +35,7 @@ class DataProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetVersion()
     {
-        $this->assertEquals($this->config['version'], $this->object->getVersion());
+        $this->assertEquals($this->config['version'], $this->object->version);
     }
 
     /**
@@ -63,7 +43,7 @@ class DataProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAccount()
     {
-        $this->assertEquals($this->config['vsp_account'], $this->object->getAccount());
+        $this->assertEquals($this->config['vsp_account'], $this->object->account);
     }
 
     /**
@@ -71,30 +51,6 @@ class DataProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetUrl()
     {
-        $this->assertEquals($this->config['connection']['test']['url'], $this->object->getUrl());
-    }
-
-    /**
-     * @covers SclZfCartSagepay\Data\DataProvider::getCrypt
-     * @covers SclZfCartSagepay\Data\DataProvider::setCart
-     * @todo   Implement testGetCrypt().
-     */
-    public function testGetCrypt()
-    {
-        $this->cryptData->expects($this->once())
-            ->method('__toString')
-            ->will($this->returnValue('data_string'));
-
-        $this->blockCipher->expects($this->once())
-            ->method('encrypt')
-            ->with($this->equalTo('data_string'))
-            ->will($this->returnValue('encrypted_string'));
-        
-        $this->assertEquals(base64_encode('encrypted_string'), $this->object->getCrypt());
-        
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'Need to test the correct data is added and test the password'
-        );
+        $this->assertEquals($this->config['connection']['test']['url'], $this->object->url);
     }
 }

@@ -42,7 +42,13 @@ class DataProvider
      * 
      * @var string
      */
-    private $vspAccount;
+    private $account;
+
+    /**
+     * 
+     * @var string
+     */
+    private $password;
 
     /**
      * 
@@ -50,23 +56,6 @@ class DataProvider
      */
     private $url;
 
-    /**
-     * 
-     * @var Cart
-     */
-    private $cart;
-
-    /**
-     * 
-     * @var BlockCipher
-     */
-    private $blockCipher;
-
-    /**
-     * 
-     * @var CryptData
-     */
-    private $cryptData;
 
     /**
      *
@@ -84,15 +73,15 @@ class DataProvider
      * 
      * @param array $config
      */
-    public function __construct(array $config, BlockCipher $blockCipher, CryptData $cryptData)
+    public function __construct(array $config)
     {
         $this->name = (string) $config[self::CONFIG_NAME];
 
         $this->version = (string) $config[self::CONFIG_VERSION];
 
-        $this->vspAccount = (string) $config[self::CONFIG_VSP_ACCOUNT];
+        $this->account = (string) $config[self::CONFIG_VSP_ACCOUNT];
 
-        $this->currency = (string) $config[self::CONFIG_CURRENCY];
+        $this->currency = (string) $config[self::CONFIG_TX_CURRENCY];
 
         $this->transactionDescription = (string) $config[self::CONFIG_TX_DESCRIPTION];
 
@@ -103,88 +92,36 @@ class DataProvider
         }
 
         $this->url = (string) $settings[self::CONFIG_URL];
-
-        $blockCipher->setKey((string) $settings[self::CONFIG_PASSWORD]);
-
-        $this->blockCipher = $blockCipher;
-        $this->cryptData = $cryptData;
+        $this->password =  (string) $settings[self::CONFIG_PASSWORD];
     }
 
     /**
+     * Make this class read only
      *
-     * @param Cart $cart
+     * @param string $name
+     * @param mixed  $value
+     * @throws \Exception
+     * @todo Throw a proper exception
      */
-    public function setCart(Cart $cart)
+    public function __set($name, $value)
     {
-        $this->cart = $cart;
+        throw new \Exception('This object is read only');
     }
 
     /**
-     * @return string
-     */
-    public function name()
-    {
-        return $this->name;
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    public function version()
-    {
-        return $this->version;
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    public function account()
-    {
-        return $this->vspAccount;
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    public function url()
-    {
-        return $this->url;
-    }
-
-    public function currency()
-    {
-        return $this->currency;
-    }
-
-    public function transactionDescription()
-    {
-        return $this->transactionDescription;
-    }
-
-    const CRYPT_VAR_TX_CODE      = 'VendorTxCode';
-    const CRYPT_VAR_AMOUNT       = 'Amount';
-    const CRYPT_VAR_CURRENCY     = 'Currency';
-    const CRYPT_VAR_DESCRIPTION  = 'Description';
-
-    /**
+     * Expose private memebers
      *
-     * @return string
+     * @param string $name
+     * @return mixed
+     * @throws \Exception
+     * @todo Throw a proper exception
      */
-    public function getCrypt()
+    public function __get($name)
     {
-        $this->cryptData
-            // @todo Use the SequenceGenerator
-            ->add(self::CRYPT_VAR_TX_CODE, 'SCL-TX-')
-            // @todo Cart::getAmount()
-            ->add(self::CRYPT_VAR_AMOUNT, '')
-            ->add(self::CRYPT_VAR_CURRENCY, $this->currency)
-            ->add(self::CRYPT_VAR_DESCRIPTION, $this->transactionDescription);
+        if (!isset($this->$name)) {
+            throw new \Exception("Unknown property '$name'");
+        }
 
-        $encrypted = $this->blockCipher->encrypt((string) $this->cryptData);
-
-        return base64_encode($encrypted);
+        return $this->$name;
     }
 }

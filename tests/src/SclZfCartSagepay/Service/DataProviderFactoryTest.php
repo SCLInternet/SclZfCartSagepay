@@ -35,24 +35,8 @@ class DataProviderFactoryTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('Config'))
             ->will($this->returnValue($config));
 
-        $blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $provider = $this->object->createService($serviceLocator);
 
-        $serviceLocator->expects($this->at(1))
-            ->method('get')
-            ->with($this->equalTo('SclZfCartSagepay\BlockCipher'))
-            ->will($this->returnValue($blockCipher));
-
-        $cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
-
-        $serviceLocator->expects($this->at(2))
-            ->method('get')
-            ->with($this->equalTo('SclZfCartSagepay\Data\CryptData'))
-            ->will($this->returnValue($cryptData));
-
-        $cipher = $this->object->createService($serviceLocator);
-
-        $this->assertInstanceOf('SclZfCartSagepay\Data\DataProvider', $cipher);
+        $this->assertInstanceOf('SclZfCartSagepay\Data\DataProvider', $provider);
     }
 }

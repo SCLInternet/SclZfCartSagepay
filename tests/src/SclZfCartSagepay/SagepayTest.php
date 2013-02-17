@@ -13,6 +13,10 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
     protected $dataProvider;
 
+    protected $blockCipher;
+
+    protected $cryptData;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -20,7 +24,12 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->dataProvider = $this->getMockBuilder('SclZfCartSagepay\Data\DataProvider')->disableOriginalConstructor()->getMock();
-        $this->object = new Sagepay($this->dataProvider);
+
+        $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')->disableOriginalConstructor()->getMock();
+
+        $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
+
+        $this->object = new Sagepay($this->dataProvider, $this->blockCipher, $this->cryptData);
     }
 
     /**
@@ -30,7 +39,8 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     public function testName()
     {
         $this->dataProvider->expects($this->once())
-            ->method('getName')
+            ->method('__get')
+            ->with($this->equalTo('name'))
             ->will($this->returnValue('Sagepay Name'));
 
         $this->assertEquals('Sagepay Name', $this->object->name());
@@ -59,4 +69,30 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
           'This test has not been implemented yet.'
         );
     }
+
+    /**
+     * @covers SclZfCartSagepay\Data\DataProvider::getCrypt
+     * @covers SclZfCartSagepay\Data\DataProvider::setCart
+     * @todo   Implement testGetCrypt().
+     */
+    /*
+    public function testGetCrypt()
+    {
+        $this->cryptData->expects($this->once())
+            ->method('__toString')
+            ->will($this->returnValue('data_string'));
+
+        $this->blockCipher->expects($this->once())
+            ->method('encrypt')
+            ->with($this->equalTo('data_string'))
+            ->will($this->returnValue('encrypted_string'));
+        
+        $this->assertEquals(base64_encode('encrypted_string'), $this->object->getCrypt());
+        
+        // Remove the following lines when you implement this test.
+        $this->markTestIncomplete(
+          'Need to test the correct data is added and test the password'
+        );
+    }
+    */
 }
