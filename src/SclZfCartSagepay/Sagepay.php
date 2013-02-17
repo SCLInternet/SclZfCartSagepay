@@ -74,11 +74,11 @@ class Sagepay implements PaymentMethodInterface
     {
         $this->provider->setCart($cart);
 
-        $form->setAttribute('action', $this->provider->getUrl());
+        $form->setAttribute('action', $this->provider->url());
 
-        $this->addHiddenField($form, self::VAR_PROTOCOL, $this->provider->getVersion());
+        $this->addHiddenField($form, self::VAR_PROTOCOL, $this->provider->version());
         $this->addHiddenField($form, self::VAR_TYPE, self::TX_TYPE_PAYMENT);
-        $this->addHiddenField($form, self::VAR_ACCOUNT, $this->provider->getAccount());
+        $this->addHiddenField($form, self::VAR_ACCOUNT, $this->provider->account());
         $this->addHiddenField($form, self::VAR_CRYPT, $this->provider->getCrypt());
     }
 

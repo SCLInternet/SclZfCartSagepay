@@ -14,6 +14,8 @@ class DataProvider
 {
     const CONFIG_NAME          = 'name';
     const CONFIG_VERSION       = 'version';
+    const CONFIG_TX_CURRENCY   = 'tx_currency';
+    const CONFIG_TX_DESCRIPTION= 'tx_description';
     const CONFIG_LIVE          = 'live';
     const CONFIG_VSP_ACCOUNT   = 'vsp_account';
     const CONFIG_CONNECTION    = 'connection';
@@ -67,6 +69,18 @@ class DataProvider
     private $cryptData;
 
     /**
+     *
+     * @var string
+     */
+    private $currency;
+
+    /**
+     * 
+     * @var string
+     */
+    private $transactionDescription;
+
+    /**
      * 
      * @param array $config
      */
@@ -77,6 +91,10 @@ class DataProvider
         $this->version = (string) $config[self::CONFIG_VERSION];
 
         $this->vspAccount = (string) $config[self::CONFIG_VSP_ACCOUNT];
+
+        $this->currency = (string) $config[self::CONFIG_CURRENCY];
+
+        $this->transactionDescription = (string) $config[self::CONFIG_TX_DESCRIPTION];
 
         if ($config[self::CONFIG_LIVE]) {
             $settings = $config[self::CONFIG_CONNECTION][self::CONFIG_LIVE_SETTINGS];
@@ -104,7 +122,7 @@ class DataProvider
     /**
      * @return string
      */
-    public function getName()
+    public function name()
     {
         return $this->name;
     }
@@ -113,7 +131,7 @@ class DataProvider
      * 
      * @return string
      */
-    public function getVersion()
+    public function version()
     {
         return $this->version;
     }
@@ -122,7 +140,7 @@ class DataProvider
      * 
      * @return string
      */
-    public function getAccount()
+    public function account()
     {
         return $this->vspAccount;
     }
@@ -131,10 +149,25 @@ class DataProvider
      * 
      * @return string
      */
-    public function getUrl()
+    public function url()
     {
         return $this->url;
     }
+
+    public function currency()
+    {
+        return $this->currency;
+    }
+
+    public function transactionDescription()
+    {
+        return $this->transactionDescription;
+    }
+
+    const CRYPT_VAR_TX_CODE      = 'VendorTxCode';
+    const CRYPT_VAR_AMOUNT       = 'Amount';
+    const CRYPT_VAR_CURRENCY     = 'Currency';
+    const CRYPT_VAR_DESCRIPTION  = 'Description';
 
     /**
      *
@@ -142,7 +175,13 @@ class DataProvider
      */
     public function getCrypt()
     {
-        $this->cryptData->add('field', 'value');
+        $this->cryptData
+            // @todo Use the SequenceGenerator
+            ->add(self::CRYPT_VAR_TX_CODE, 'SCL-TX-')
+            // @todo Cart::getAmount()
+            ->add(self::CRYPT_VAR_AMOUNT, '')
+            ->add(self::CRYPT_VAR_CURRENCY, $this->currency)
+            ->add(self::CRYPT_VAR_DESCRIPTION, $this->transactionDescription);
 
         $encrypted = $this->blockCipher->encrypt((string) $this->cryptData);
 
