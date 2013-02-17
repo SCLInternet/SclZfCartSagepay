@@ -10,7 +10,7 @@ use Zend\Crypt\BlockCipher;
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class DataProvider
+class Config
 {
     const CONFIG_NAME          = 'name';
     const CONFIG_VERSION       = 'version';

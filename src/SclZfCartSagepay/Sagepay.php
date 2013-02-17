@@ -5,7 +5,7 @@ namespace SclZfCartSagepay;
 use SclZfCart\Cart;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
-use SclZfCartSagepay\Data\DataProvider;
+use SclZfCartSagepay\Data\Config;
 use Zend\Crypt\BlockCipher;
 use Zend\Form\Form;
 
@@ -31,7 +31,7 @@ class Sagepay implements PaymentMethodInterface
     const CRYPT_VAR_FAILURE_URL  = 'FailureURL';
 
     /**
-     * @var DataProvider
+     * @var Config
      */
     private $config;
 
@@ -48,12 +48,12 @@ class Sagepay implements PaymentMethodInterface
     private $cryptData;
 
     /**
-     * @param DataProvider $provider
+     * @param Config       $provider
      * @param BlockCipher  $blockCipher
      * @param CryptData    $cryptData
      */
     public function __construct(
-        DataProvider $config,
+        Config $config,
         BlockCipher $blockCipher,
         CryptData $cryptData
     ) {

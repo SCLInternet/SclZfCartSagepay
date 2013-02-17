@@ -23,7 +23,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->dataProvider = $this->getMockBuilder('SclZfCartSagepay\Data\DataProvider')->disableOriginalConstructor()->getMock();
+        $this->dataProvider = $this->getMockBuilder('SclZfCartSagepay\Data\Config')->disableOriginalConstructor()->getMock();
 
         $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')->disableOriginalConstructor()->getMock();
 
@@ -71,8 +71,8 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers SclZfCartSagepay\Data\DataProvider::getCrypt
-     * @covers SclZfCartSagepay\Data\DataProvider::setCart
+     * @covers SclZfCartSagepay\Data\Config::getCrypt
+     * @covers SclZfCartSagepay\Data\Config::setCart
      * @todo   Implement testGetCrypt().
      */
     /*
