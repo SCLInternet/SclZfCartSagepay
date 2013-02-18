@@ -31,26 +31,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers SclZfCartSagepay\Data\Config::getVersion
+     * @covers SclZfCartSagepay\Data\Config::__get
      */
-    public function testGetVersion()
+    public function testReadProperties()
     {
         $this->assertEquals($this->config['version'], $this->object->version);
-    }
 
-    /**
-     * @covers SclZfCartSagepay\Data\Config::getAccount
-     */
-    public function testGetAccount()
-    {
         $this->assertEquals($this->config['vsp_account'], $this->object->account);
-    }
 
-    /**
-     * @covers SclZfCartSagepay\Data\Config::getUrl
-     */
-    public function testGetUrl()
-    {
         $this->assertEquals($this->config['connection']['test']['url'], $this->object->url);
     }
 }
