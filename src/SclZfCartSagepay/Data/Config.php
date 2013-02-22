@@ -2,9 +2,6 @@
 
 namespace SclZfCartSagepay\Data;
 
-use SclZfCart\Cart;
-use Zend\Crypt\BlockCipher;
-
 /**
  * Collects up the data that is needed for Sagepay and formats it as required.
  *

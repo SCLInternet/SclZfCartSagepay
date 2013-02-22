@@ -15,6 +15,7 @@ class SagepayFactory implements FactoryInterface
     /**
      * Create an instance of {@see Sagepay}.
      *
+     * @todo Handle exceptions from when Sagepay is created.
      * @param ServiceLocatorInterface
      * @return Sagepay
      */
