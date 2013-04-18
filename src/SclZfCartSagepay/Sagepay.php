@@ -2,7 +2,7 @@
 
 namespace SclZfCartSagepay;
 
-use SclZfCart\Cart;
+use SclZfCart\Entity\OrderInterface;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
 use SclZfCartSagepay\Data\Config;
@@ -95,10 +95,10 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * @param Cart $cart
+     * @param  OrderIntefface $order
      * @return string
      */
-    private function getCrypt(Cart $cart)
+    private function getCrypt(OrderInterface $order)
     {
         $this->cryptData
             // @todo Use the SequenceGenerator
@@ -119,18 +119,19 @@ class Sagepay implements PaymentMethodInterface
     /**
      * {@inheritDoc}
      *
-     * @param Form $form
-     * @param Cart $cart
+     * @param  Form           $form
+     * @param  OrderInterface $order
+     * @return void
      * @todo Use a CompleteForm object instead of Form
      */
-    public function updateCompleteForm(Form $form, Cart $cart)
+    public function updateCompleteForm(Form $form, OrderInterface $order)
     {
         $form->setAttribute('action', $this->config->url);
 
         $this->addHiddenField($form, self::VAR_PROTOCOL, $this->config->version);
         $this->addHiddenField($form, self::VAR_TYPE, self::TX_TYPE_PAYMENT);
         $this->addHiddenField($form, self::VAR_ACCOUNT, $this->config->account);
-        $this->addHiddenField($form, self::VAR_CRYPT, $this->getCrypt($cart));
+        $this->addHiddenField($form, self::VAR_CRYPT, $this->getCrypt($order));
     }
 
     /**
