@@ -4,7 +4,6 @@ namespace SclZfCartSagepay;
 
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 
@@ -15,20 +14,10 @@ use Zend\ModuleManager\Feature\ServiceProviderInterface;
  * @author Tom Oram <tom@scl.co.uk>
  */
 class Module implements
-    BootstrapListenerInterface,
     AutoloaderProviderInterface,
     ConfigProviderInterface,
     ServiceProviderInterface
 {
-    /**
-     * {@inheritDoc}
-     *
-     * @param EventInterface $e
-     */
-    public function onBootstrap(EventInterface $e)
-    {
-    }
-
     /**
      * {@inheritDoc}
      */
