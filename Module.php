@@ -50,9 +50,9 @@ class Module implements
                 'SclZfCartSagepay\Data\CryptData' => 'SclZfCartSagepay\Data\CryptData',
             ),
             'factories' => array(
-                'SclZfCartSagepay\BlockCipher' => 'SclZfCartSagepay\Service\BlockCipherFactory',
-                'SclZfCartSagepay\Sagepay'     => 'SclZfCartSagepay\Service\SagepayFactory',
-                'SclZfCartSagepay\Data\Config' => 'SclZfCartSagepay\Service\ConfigFactory',
+                'SclZfCartSagepay\BlockCipher'            => 'SclZfCartSagepay\Service\BlockCipherFactory',
+                'SclZfCartSagepay\Sagepay'                => 'SclZfCartSagepay\Service\SagepayFactory',
+                'SclZfCartSagepay\Options\SagepayOptions' => 'SclZfCartSagepay\Service\SagepayOptionsFactory',
             ),
         );
     }

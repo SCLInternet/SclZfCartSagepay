@@ -13,7 +13,9 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
      */
     protected $object;
 
-    protected $dataProvider;
+    protected $options;
+
+    protected $connectionOptions;
 
     protected $blockCipher;
 
@@ -25,13 +27,25 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->dataProvider = $this->getMockBuilder('SclZfCartSagepay\Data\Config')->disableOriginalConstructor()->getMock();
+        $this->options = $this->getMockBuilder('SclZfCartSagepay\Options\SagepayOptions')
+            ->disableOriginalConstructor()
+            ->getMock();
 
-        $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')->disableOriginalConstructor()->getMock();
+        $this->connectionOptions = $this->getMockBuilder('SclZfCartSagepay\Options\ConnectionOptions')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->options->expects($this->any())
+            ->method('getConnectionOptions')
+            ->will($this->returnValue($this->connectionOptions));
+
+        $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
 
-        $this->object = new Sagepay($this->dataProvider, $this->blockCipher, $this->cryptData);
+        $this->object = new Sagepay($this->options, $this->blockCipher, $this->cryptData);
     }
 
     /**
@@ -40,9 +54,8 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
      */
     public function testName()
     {
-        $this->dataProvider->expects($this->once())
-            ->method('__get')
-            ->with($this->equalTo('name'))
+        $this->options->expects($this->once())
+            ->method('getName')
             ->will($this->returnValue('Sagepay Name'));
 
         $this->assertEquals('Sagepay Name', $this->object->name());

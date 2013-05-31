@@ -15,17 +15,17 @@ class SagepayFactory implements FactoryInterface
     /**
      * Create an instance of {@see Sagepay}.
      *
-     * @todo Handle exceptions from when Sagepay is created.
-     * @param ServiceLocatorInterface
+     * @param  ServiceLocatorInterface $serviceLocator
      * @return Sagepay
+     * @todo Handle exceptions from when Sagepay is created.
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $provider = $serviceLocator->get('SclZfCartSagepay\Data\Config');
+        $options = $serviceLocator->get('SclZfCartSagepay\Options\SagepayOptions');
 
         $blockCipher = $serviceLocator->get('SclZfCartSagepay\BlockCipher');
         $cryptData = $serviceLocator->get('SclZfCartSagepay\Data\CryptData');
 
-        return new Sagepay($provider, $blockCipher, $cryptData);
+        return new Sagepay($options, $blockCipher, $cryptData);
     }
 }

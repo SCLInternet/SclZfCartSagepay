@@ -5,7 +5,7 @@ namespace SclZfCartSagepay;
 use SclZfCart\Entity\OrderInterface;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
-use SclZfCartSagepay\Data\Config;
+use SclZfCartSagepay\Options\SagepayOptions;
 use Zend\Crypt\BlockCipher;
 use Zend\Form\Form;
 
@@ -31,35 +31,35 @@ class Sagepay implements PaymentMethodInterface
     const CRYPT_VAR_FAILURE_URL  = 'FailureURL';
 
     /**
-     * @var Config
+     * @var SagepayOptions
      */
-    private $config;
+    private $options;
 
     /**
-     * 
+     *
      * @var BlockCipher
      */
     private $blockCipher;
 
     /**
-     * 
+     *
      * @var CryptData
      */
     private $cryptData;
 
     /**
-     * @param Config       $provider
-     * @param BlockCipher  $blockCipher
-     * @param CryptData    $cryptData
+     * @param SagepayOptions $provider
+     * @param BlockCipher    $blockCipher
+     * @param CryptData      $cryptData
      */
     public function __construct(
-        Config $config,
+        SagepayOptions $options,
         BlockCipher $blockCipher,
         CryptData $cryptData
     ) {
-        $this->config = $config;
+        $this->options = $options;
 
-        $blockCipher->setKey((string) $config->password);
+        $blockCipher->setKey((string) $options->getConnectionOptions()->getPassword());
         $this->blockCipher = $blockCipher;
 
         $this->cryptData = $cryptData;
@@ -72,11 +72,11 @@ class Sagepay implements PaymentMethodInterface
      */
     public function name()
     {
-        return $this->config->name;
+        return $this->options->getName();
     }
 
     /**
-     * 
+     *
      * @param Form $form
      * @param string $name
      * @param string $value
@@ -101,15 +101,15 @@ class Sagepay implements PaymentMethodInterface
     private function getCrypt(OrderInterface $order)
     {
         $this->cryptData
-            // @todo Use the SequenceGenerator
-            ->add(self::CRYPT_VAR_TX_CODE, 'SCL-TX-')
-            // @todo Cart::getAmount()
-            ->add(self::CRYPT_VAR_AMOUNT, '')
-            ->add(self::CRYPT_VAR_CURRENCY, $this->config->currency)
-            ->add(self::CRYPT_VAR_DESCRIPTION, $this->config->transactionDescription)
-            // @todo Get urls from routes in the config
-            ->add(self::CRYPT_VAR_SUCCESS_URL, '')
-            ->add(self::CRYPT_VAR_FAILURE_URL, '');
+             // @todo Use the SequenceGenerator
+             ->add(self::CRYPT_VAR_TX_CODE, 'SCL-TX-')
+             // @todo Cart::getAmount()
+             ->add(self::CRYPT_VAR_AMOUNT, '')
+             ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
+             ->add(self::CRYPT_VAR_DESCRIPTION, $this->options->getTxDescription())
+             // @todo Get urls from routes in the options
+             ->add(self::CRYPT_VAR_SUCCESS_URL, '')
+             ->add(self::CRYPT_VAR_FAILURE_URL, '');
 
         $encrypted = $this->blockCipher->encrypt((string) $this->cryptData);
 
@@ -126,11 +126,11 @@ class Sagepay implements PaymentMethodInterface
      */
     public function updateCompleteForm(Form $form, OrderInterface $order)
     {
-        $form->setAttribute('action', $this->config->url);
+        $form->setAttribute('action', $this->options->getConnectionOptions()->getUrl());
 
-        $this->addHiddenField($form, self::VAR_PROTOCOL, $this->config->version);
+        $this->addHiddenField($form, self::VAR_PROTOCOL, $this->options->getVersion());
         $this->addHiddenField($form, self::VAR_TYPE, self::TX_TYPE_PAYMENT);
-        $this->addHiddenField($form, self::VAR_ACCOUNT, $this->config->account);
+        $this->addHiddenField($form, self::VAR_ACCOUNT, $this->options->getAccount());
         $this->addHiddenField($form, self::VAR_CRYPT, $this->getCrypt($order));
     }
 
