@@ -29,14 +29,14 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $serviceLocator = $this->getMock('Zend\ServiceManager\ServiceLocatorInterface');
 
-        $dataProvider = $this->getMockBuilder('SclZfCartSagepay\Data\Config')
+        $options = $this->getMockBuilder('SclZfCartSagepay\Options\SagepayOptions')
             ->disableOriginalConstructor()
             ->getMock();
 
         $serviceLocator->expects($this->at(0))
             ->method('get')
-            ->with($this->equalTo('SclZfCartSagepay\Data\Config'))
-            ->will($this->returnValue($dataProvider));
+            ->with($this->equalTo('SclZfCartSagepay\Options\SagepayOptions'))
+            ->will($this->returnValue($options));
 
         $blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')
             ->disableOriginalConstructor()
@@ -53,6 +53,12 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with($this->equalTo('SclZfCartSagepay\Data\CryptData'))
             ->will($this->returnValue($cryptData));
+
+        $connOptions = $this->getMock('SclZfCartSagepay\Options\ConnectionOptions');
+
+        $options->expects($this->any())
+                ->method('getConnectionOptions')
+                ->will($this->returnValue($connOptions));
 
         $sagepay = $this->object->createService($serviceLocator);
 

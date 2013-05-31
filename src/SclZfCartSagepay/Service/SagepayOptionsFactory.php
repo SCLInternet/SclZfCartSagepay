@@ -1,24 +1,24 @@
 <?php
 namespace SclZfCartSagepay\Service;
 
-use SclZfCartSagepay\Data\Config;
+use SclZfCartSagepay\Options\SagepayOptions;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Factory for creating {@see Config} objects.
+ * Factory for creating {@see SagepayConfig} objects.
  *
  * @author Tom Oram <tom@scl.co.uk>
  */
-class ConfigFactory implements FactoryInterface
+class SagepayOptionsFactory implements FactoryInterface
 {
     const CONFIG_KEY = 'scl_zf_cart_sagepay';
 
     /**
-     * Create an instance of {@see Config}.
+     * Create an instance of {@see SagepayOptions}.
      *
-     * @param ServiceLocatorInterface
-     * @return Config
+     * @param  ServiceLocatorInterface
+     * @return SagepayOptions
      */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
@@ -26,6 +26,6 @@ class ConfigFactory implements FactoryInterface
 
         $config = $config[self::CONFIG_KEY];
 
-        return new Config($config);
+        return new SagepayOptions($config);
     }
 }
