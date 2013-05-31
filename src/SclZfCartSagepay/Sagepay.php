@@ -33,19 +33,19 @@ class Sagepay implements PaymentMethodInterface
     /**
      * @var SagepayOptions
      */
-    private $options;
+    protected $options;
 
     /**
      *
      * @var BlockCipher
      */
-    private $blockCipher;
+    protected $blockCipher;
 
     /**
      *
      * @var CryptData
      */
-    private $cryptData;
+    protected $cryptData;
 
     /**
      * @param SagepayOptions $provider
@@ -81,7 +81,7 @@ class Sagepay implements PaymentMethodInterface
      * @param string $name
      * @param string $value
      */
-    private function addHiddenField(Form $form, $name, $value)
+    protected function addHiddenField(Form $form, $name, $value)
     {
         $form->add(
             array(
@@ -98,7 +98,7 @@ class Sagepay implements PaymentMethodInterface
      * @param  OrderIntefface $order
      * @return string
      */
-    private function getCrypt(OrderInterface $order)
+    protected function getCrypt(OrderInterface $order)
     {
         $this->cryptData
              // @todo Use the SequenceGenerator
