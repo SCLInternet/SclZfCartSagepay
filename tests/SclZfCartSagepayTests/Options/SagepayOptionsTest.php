@@ -77,6 +77,48 @@ class SagepayOptionsTest extends \PHPUnit_Framework_TestCase
         $this->getSetCheck('testConnection', $this->getMock('SclZfCartSagepay\Options\ConnectionOptions'));
     }
 
+
+    /**
+     * Test the set*Connection method when passed an array.
+     *
+     * @covers SclZfCartSagepay\Options\SagepayOptions::getLiveConnection
+     * @covers SclZfCartSagepay\Options\SagepayOptions::setLiveConnection
+     * @covers SclZfCartSagepay\Options\SagepayOptions::getTestConnection
+     * @covers SclZfCartSagepay\Options\SagepayOptions::setTestConnection
+     *
+     * @return void
+     */
+    public function testConnectionSettersWithArray()
+    {
+        $live = array(
+            'url'      => 'live_url',
+            'password' => 'live_pw',
+        );
+        $test = array(
+            'url'      => 'test_url',
+            'password' => 'test_pw',
+        );
+
+        $this->options->setLiveConnection($live);
+        $this->options->setTestConnection($test);
+
+        $liveConn = $this->options->getLiveConnection();
+        $testConn = $this->options->getTestConnection();
+
+        $this->assertEquals($live['url'], $liveConn->getUrl(), 'Live URL is incorrect.');
+        $this->assertEquals($test['url'], $testConn->getUrl(), 'Test URL is incorrect.');
+
+        $this->assertEquals($live['password'], $liveConn->getPassword(), 'Live password is incorrect.');
+        $this->assertEquals($test['password'], $testConn->getPassword(), 'Test password is incorrect.');
+    }
+
+    /**
+     * testGetConnection
+     *
+     * @covers SclZfCartSagepay\Options\SagepayOptions::getConnectionOptions
+     *
+     * @return void
+     */
     public function testGetConnection()
     {
         $liveConnection = new ConnectionOptions();
