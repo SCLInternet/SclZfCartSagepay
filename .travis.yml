@@ -7,5 +7,9 @@ php:
 before_script:
   - composer self-update
   - composer install --dev --prefer-source
+  - mkdir -p build/logs
 
 script: .travis/travis_build.sh
+
+after_script:
+  - php vendor/bin/coveralls -v
