@@ -77,7 +77,6 @@ class SagepayOptionsTest extends \PHPUnit_Framework_TestCase
         $this->getSetCheck('testConnection', $this->getMock('SclZfCartSagepay\Options\ConnectionOptions'));
     }
 
-
     /**
      * Test the set*Connection method when passed an array.
      *
@@ -110,6 +109,34 @@ class SagepayOptionsTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals($live['password'], $liveConn->getPassword(), 'Live password is incorrect.');
         $this->assertEquals($test['password'], $testConn->getPassword(), 'Test password is incorrect.');
+    }
+
+    /**
+     * When setLiveConnection is called with an object which is not an instance
+     * of ConnectionOptions then InvalidArgumentException should be thrown.
+     *
+     * @covers SclZfCartSagepay\Options\SagepayOptions::setLiveConnection
+     * @expectedException SclZfCartSagepay\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetLiveConnectionWithBadObject()
+    {
+        $this->options->setLiveConnection(new \stdClass);
+    }
+
+    /**
+     * When setTestConnection is called with an object which is not an instance
+     * of ConnectionOptions then InvalidArgumentException should be thrown.
+     *
+     * @covers SclZfCartSagepay\Options\SagepayOptions::setTestConnection
+     * @expectedException SclZfCartSagepay\Exception\InvalidArgumentException
+     *
+     * @return void
+     */
+    public function testSetTestConnectionWithBadObject()
+    {
+        $this->options->setTestConnection(new \stdClass);
     }
 
     /**

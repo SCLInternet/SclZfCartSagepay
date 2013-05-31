@@ -62,9 +62,12 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers SclZfCartSagepay\Sagepay::__construct
      * @covers SclZfCartSagepay\Sagepay::updateCompleteForm
      * @covers SclZfCartSagepay\Sagepay::getCrypt
      * @covers SclZfCartSagepay\Sagepay::addHiddenField
+     *
+     * @return void
      */
     public function testUpdateCompleteForm()
     {
@@ -101,30 +104,4 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->complete(array());
     }
-
-    /**
-     * @covers SclZfCartSagepay\Data\Config::getCrypt
-     * @covers SclZfCartSagepay\Data\Config::setCart
-     * @todo   Implement testGetCrypt().
-     */
-    /*
-    public function testGetCrypt()
-    {
-        $this->cryptData->expects($this->once())
-            ->method('__toString')
-            ->will($this->returnValue('data_string'));
-
-        $this->blockCipher->expects($this->once())
-            ->method('encrypt')
-            ->with($this->equalTo('data_string'))
-            ->will($this->returnValue('encrypted_string'));
-
-        $this->assertEquals(base64_encode('encrypted_string'), $this->object->getCrypt());
-
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'Need to test the correct data is added and test the password'
-        );
-    }
-    */
 }
