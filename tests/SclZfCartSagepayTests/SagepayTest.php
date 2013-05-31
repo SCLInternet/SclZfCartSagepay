@@ -63,14 +63,34 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers SclZfCartSagepay\Sagepay::updateCompleteForm
-     * @todo   Implement testUpdateCompleteForm().
+     * @covers SclZfCartSagepay\Sagepay::getCrypt
+     * @covers SclZfCartSagepay\Sagepay::addHiddenField
      */
     public function testUpdateCompleteForm()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $url = 'http://action.url';
+
+        $this->connectionOptions
+             ->expects($this->any())
+             ->method('getUrl')
+             ->will($this->returnValue($url));
+
+        $form = $this->getMock('Zend\Form\Form');
+        $order = $this->getMock('SclZfCart\Entity\OrderInterface');
+
+        $form->expects($this->once())
+             ->method('setAttribute')
+             ->with($this->equalTo('action'), $this->equalTo($url));
+
+        // @todo Check the actual values being added
+        $this->cryptData
+             ->expects($this->any())
+             ->method('add')
+             ->will($this->returnValue($this->cryptData));
+
+        // @todo Check form elements are being added
+
+        $this->object->updateCompleteForm($form, $order);
     }
 
     /**
@@ -79,10 +99,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
      */
     public function testComplete()
     {
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'This test has not been implemented yet.'
-        );
+        $this->object->complete(array());
     }
 
     /**
