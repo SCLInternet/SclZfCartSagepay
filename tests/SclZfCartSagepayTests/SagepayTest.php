@@ -75,8 +75,9 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
              ->method('getUrl')
              ->will($this->returnValue($url));
 
-        $form = $this->getMock('Zend\Form\Form');
-        $order = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $form    = $this->getMock('Zend\Form\Form');
+        $order   = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
 
         $form->expects($this->once())
              ->method('setAttribute')
@@ -90,7 +91,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
         // @todo Check form elements are being added
 
-        $this->object->updateCompleteForm($form, $order);
+        $this->object->updateCompleteForm($form, $order, $payment);
     }
 
     /**
