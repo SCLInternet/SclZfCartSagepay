@@ -3,6 +3,7 @@
 namespace SclZfCartSagepay;
 
 use SclZfCart\Entity\OrderInterface;
+use SclZfCartPayment\Entity\PaymentInterface;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
 use SclZfCartSagepay\Options\SagepayOptions;
@@ -124,7 +125,7 @@ class Sagepay implements PaymentMethodInterface
      * @return void
      * @todo Use a CompleteForm object instead of Form
      */
-    public function updateCompleteForm(Form $form, OrderInterface $order)
+    public function updateCompleteForm(Form $form, OrderInterface $order, PaymentInterface $payment)
     {
         $form->setAttribute('action', $this->options->getConnectionOptions()->getUrl());
 

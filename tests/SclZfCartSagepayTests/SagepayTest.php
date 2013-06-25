@@ -88,9 +88,11 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
              ->method('add')
              ->will($this->returnValue($this->cryptData));
 
+        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
+
         // @todo Check form elements are being added
 
-        $this->object->updateCompleteForm($form, $order);
+        $this->object->updateCompleteForm($form, $order, $payment);
     }
 
     /**
