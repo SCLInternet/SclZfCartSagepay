@@ -122,7 +122,7 @@ class Sagepay implements PaymentMethodInterface
      *
      * @param  Form            $form
      * @param  OrderInterface  $order
-     * @param  PaymentInterfce $order
+     * @param  PaymentInterfce $payment
      * @return void
      * @todo Use a CompleteForm object instead of Form
      */
