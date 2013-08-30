@@ -21,6 +21,8 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
     protected $cryptData;
 
+    protected $urlBuilder;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -45,7 +47,9 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
         $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
 
-        $this->object = new Sagepay($this->options, $this->blockCipher, $this->cryptData);
+        $this->urlBuilder = $this->getmock('SclZfUtilities\Route\UrlBuilder');
+
+        $this->object = new Sagepay($this->options, $this->blockCipher, $this->cryptData, $this->urlBuilder);
     }
 
     /**

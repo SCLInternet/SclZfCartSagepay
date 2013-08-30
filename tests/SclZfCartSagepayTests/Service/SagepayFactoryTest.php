@@ -60,6 +60,13 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
                 ->method('getConnectionOptions')
                 ->will($this->returnValue($connOptions));
 
+        $urlBuilder = $this->getMock('SclZfUtilities\Route\UrlBuilder');
+
+        $serviceLocator->expects($this->at(3))
+            ->method('get')
+            ->with($this->equalTo('SclZfUtilities\Route\UrlBuilder'))
+            ->will($this->returnValue($urlBuilder));
+
         $sagepay = $this->object->createService($serviceLocator);
 
         $this->assertInstanceOf('SclZfCartSagepay\Sagepay', $sagepay);

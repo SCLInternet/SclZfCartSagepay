@@ -9,6 +9,7 @@ use SclZfCartSagepay\Data\CryptData;
 use SclZfCartSagepay\Options\SagepayOptions;
 use Zend\Crypt\BlockCipher;
 use Zend\Form\Form;
+use SclZfUtilities\Route\UrlBuilder;
 
 /**
  * The payment method to intgrate Sagepay into SclZfCartPayment
@@ -49,14 +50,23 @@ class Sagepay implements PaymentMethodInterface
     protected $cryptData;
 
     /**
+     * Used to create URLs for the system.
+     *
+     * @var UrlBuilder
+     */
+    protected $urlBuilder;
+
+    /**
      * @param SagepayOptions $provider
      * @param BlockCipher    $blockCipher
      * @param CryptData      $cryptData
+     * @param UrlBuilder     $urlBuilder
      */
     public function __construct(
         SagepayOptions $options,
         BlockCipher $blockCipher,
-        CryptData $cryptData
+        CryptData $cryptData,
+        UrlBuilder $urlBuilder
     ) {
         $this->options = $options;
 
@@ -64,6 +74,8 @@ class Sagepay implements PaymentMethodInterface
         $this->blockCipher = $blockCipher;
 
         $this->cryptData = $cryptData;
+
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -103,14 +115,14 @@ class Sagepay implements PaymentMethodInterface
     {
         $this->cryptData
              // @todo Use the SequenceGenerator
-             ->add(self::CRYPT_VAR_TX_CODE, 'SCL-TX-')
-             // @todo Cart::getAmount()
-             ->add(self::CRYPT_VAR_AMOUNT, '')
+             ->add(self::CRYPT_VAR_TX_CODE, 'TEST-SCL-TX-01')
+             ->add(self::CRYPT_VAR_AMOUNT, $order->getTotal())
              ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
              ->add(self::CRYPT_VAR_DESCRIPTION, $this->options->getTxDescription())
-             // @todo Get urls from routes in the options
-             ->add(self::CRYPT_VAR_SUCCESS_URL, '')
-             ->add(self::CRYPT_VAR_FAILURE_URL, '');
+             ->add(self::CRYPT_VAR_SUCCESS_URL, $this->urlBuilder->getUrl('scl-zf-cart-sagepay/success'))
+             ->add(self::CRYPT_VAR_FAILURE_URL, $this->urlBuilder->getUrl('scl-zf-cart-sagepay/failure'));
+
+        echo "CRYPT DATA = {$this->cryptData}";
 
         $encrypted = $this->blockCipher->encrypt((string) $this->cryptData);
 
