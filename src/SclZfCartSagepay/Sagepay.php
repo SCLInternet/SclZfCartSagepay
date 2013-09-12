@@ -6,10 +6,10 @@ use SclZfCart\Entity\OrderInterface;
 use SclZfCartPayment\Entity\PaymentInterface;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
+use SclZfCartSagepay\Encryption\Cipher;
 use SclZfCartSagepay\Options\SagepayOptions;
-use Zend\Crypt\BlockCipher;
-use Zend\Form\Form;
 use SclZfUtilities\Route\UrlBuilder;
+use Zend\Form\Form;
 
 /**
  * The payment method to intgrate Sagepay into SclZfCartPayment
@@ -39,9 +39,9 @@ class Sagepay implements PaymentMethodInterface
 
     /**
      *
-     * @var BlockCipher
+     * @var Cipher
      */
-    protected $blockCipher;
+    protected $cipher;
 
     /**
      *
@@ -58,20 +58,19 @@ class Sagepay implements PaymentMethodInterface
 
     /**
      * @param SagepayOptions $provider
-     * @param BlockCipher    $blockCipher
+     * @param Cipher         $cipher
      * @param CryptData      $cryptData
      * @param UrlBuilder     $urlBuilder
      */
     public function __construct(
         SagepayOptions $options,
-        BlockCipher $blockCipher,
+        Cipher $cipher,
         CryptData $cryptData,
         UrlBuilder $urlBuilder
     ) {
         $this->options = $options;
 
-        $blockCipher->setKey((string) $options->getConnectionOptions()->getPassword());
-        $this->blockCipher = $blockCipher;
+        $this->cipher = $cipher;
 
         $this->cryptData = $cryptData;
 
@@ -115,18 +114,36 @@ class Sagepay implements PaymentMethodInterface
     {
         $this->cryptData
              // @todo Use the SequenceGenerator
-             ->add(self::CRYPT_VAR_TX_CODE, 'TEST-SCL-TX-01')
-             ->add(self::CRYPT_VAR_AMOUNT, $order->getTotal())
+             ->add(self::CRYPT_VAR_TX_CODE, 'TEST-SCL-TX-05')
+             ->add(self::CRYPT_VAR_AMOUNT, 100) //$order->getTotal())
              ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
-             ->add(self::CRYPT_VAR_DESCRIPTION, $this->options->getTxDescription())
-             ->add(self::CRYPT_VAR_SUCCESS_URL, $this->urlBuilder->getUrl('scl-zf-cart-sagepay/success'))
-             ->add(self::CRYPT_VAR_FAILURE_URL, $this->urlBuilder->getUrl('scl-zf-cart-sagepay/failure'));
+             ->add(self::CRYPT_VAR_DESCRIPTION, "blah") //$this->options->getTxDescription())
+             // @todo Get server name from the environment
+             ->add(self::CRYPT_VAR_SUCCESS_URL, 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/success'))
+             ->add(self::CRYPT_VAR_FAILURE_URL, 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/failure'))
 
-        echo "CRYPT DATA = {$this->cryptData}";
+             // @todo Get this information from the user.
+             ->add('BillingSurname', 'Bloggs')
+             ->add('BillingFirstnames', 'Joe')
+             ->add('BillingAddress1', 'Joes House')
+             //->add('BillingAddress2', '')
+             ->add('BillingCity', 'Big Town')
+             ->add('BillingPostCode', 'SA43 1JD')
+             ->add('BillingCountry', 'GB')
 
-        $encrypted = $this->blockCipher->encrypt((string) $this->cryptData);
+             ->add('DeliverySurname', 'Bloggs')
+             ->add('DeliveryFirstnames', 'Joe')
+             ->add('DeliveryAddress1', 'Joes House')
+             //->add('BillingAddress2', '')
+             ->add('DeliveryCity', 'Big Town')
+             ->add('DeliveryPostCode', 'SA43 1JD')
+             ->add('DeliveryCountry', 'GB')
+             ;
 
-        return base64_encode($encrypted);
+        return $this->cipher->encrypt(
+            (string) $this->cryptData,
+            $this->options->getConnectionOptions()->getPassword()
+        );
     }
 
     /**
