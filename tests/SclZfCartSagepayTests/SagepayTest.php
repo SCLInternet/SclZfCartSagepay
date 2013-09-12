@@ -21,6 +21,8 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
     protected $cryptData;
 
+    protected $urlBuilder;
+
     /**
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before a test is executed.
@@ -45,7 +47,9 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
         $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
 
-        $this->object = new Sagepay($this->options, $this->blockCipher, $this->cryptData);
+        $this->urlBuilder = $this->getmock('SclZfUtilities\Route\UrlBuilder');
+
+        $this->object = new Sagepay($this->options, $this->blockCipher, $this->cryptData, $this->urlBuilder);
     }
 
     /**
@@ -62,9 +66,12 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @covers SclZfCartSagepay\Sagepay::__construct
      * @covers SclZfCartSagepay\Sagepay::updateCompleteForm
      * @covers SclZfCartSagepay\Sagepay::getCrypt
      * @covers SclZfCartSagepay\Sagepay::addHiddenField
+     *
+     * @return void
      */
     public function testUpdateCompleteForm()
     {
@@ -75,8 +82,9 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
              ->method('getUrl')
              ->will($this->returnValue($url));
 
-        $form = $this->getMock('Zend\Form\Form');
-        $order = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $form    = $this->getMock('Zend\Form\Form');
+        $order   = $this->getMock('SclZfCart\Entity\OrderInterface');
+        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
 
         $form->expects($this->once())
              ->method('setAttribute')
@@ -88,9 +96,11 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
              ->method('add')
              ->will($this->returnValue($this->cryptData));
 
+        $payment = $this->getMock('SclZfCartPayment\Entity\PaymentInterface');
+
         // @todo Check form elements are being added
 
-        $this->object->updateCompleteForm($form, $order);
+        $this->object->updateCompleteForm($form, $order, $payment);
     }
 
     /**
@@ -101,30 +111,4 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
     {
         $this->object->complete(array());
     }
-
-    /**
-     * @covers SclZfCartSagepay\Data\Config::getCrypt
-     * @covers SclZfCartSagepay\Data\Config::setCart
-     * @todo   Implement testGetCrypt().
-     */
-    /*
-    public function testGetCrypt()
-    {
-        $this->cryptData->expects($this->once())
-            ->method('__toString')
-            ->will($this->returnValue('data_string'));
-
-        $this->blockCipher->expects($this->once())
-            ->method('encrypt')
-            ->with($this->equalTo('data_string'))
-            ->will($this->returnValue('encrypted_string'));
-
-        $this->assertEquals(base64_encode('encrypted_string'), $this->object->getCrypt());
-
-        // Remove the following lines when you implement this test.
-        $this->markTestIncomplete(
-          'Need to test the correct data is added and test the password'
-        );
-    }
-    */
 }
