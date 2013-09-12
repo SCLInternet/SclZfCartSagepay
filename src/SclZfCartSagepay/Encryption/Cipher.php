@@ -2,14 +2,25 @@
 
 namespace SclZfCartSagepay\Encryption;
 
+use Zend\Crypt\BlockCipher;
+
+/**
+ * Encryption class for the sagepay crypt.
+ *
+ * Manual says it requires AES/CBC/PKCS#5 base64 encoded crypt but that doesn't
+ * appear to be completely true.
+ *
+ * This code is based on this old Sagepay integration kit
+ * {@link https://code.google.com/p/sagepay/source/browse/old/2.23/PHPFormKit/includes.php}
+ *
+ * @author Tom Oram <tom@scl.co.uk>
+ */
 class Cipher
 {
     const BLOCK_SIZE = 16;
 
     function encrypt($data, $password)
     {
-        $strEncryptionType = "AES";
-
         $strIV = $password;
 
         $data = $this->addPKCS5Padding($data);
@@ -37,7 +48,13 @@ class Cipher
 
         $data = pack('H*', $data);
 
-        return mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $password, $data, MCRYPT_MODE_CBC, $strIV);
+        return mcrypt_decrypt(
+            MCRYPT_RIJNDAEL_128,
+            $password,
+            $data,
+            MCRYPT_MODE_CBC,
+            $strIV
+        );
     }
 
     /**
@@ -45,11 +62,10 @@ class Cipher
      */
     private function addPKCS5Padding($data)
     {
-        $blocksize = 16;
         $padding = '';
 
         // Pad input to an even block size boundary
-        $padlength = $blocksize - (strlen($data) % self::BLOCK_SIZE);
+        $padlength = self::BLOCK_SIZE - (strlen($data) % self::BLOCK_SIZE);
 
         for($i = 1; $i <= $padlength; $i++) {
             $padding .= chr($padlength);
