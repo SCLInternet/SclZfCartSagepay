@@ -38,14 +38,14 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('SclZfCartSagepay\Options\SagepayOptions'))
             ->will($this->returnValue($options));
 
-        $blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')
+        $cipher = $this->getMockBuilder('SclZfCartSagepay\Encryption\Cipher')
             ->disableOriginalConstructor()
             ->getMock();
 
         $serviceLocator->expects($this->at(1))
             ->method('get')
-            ->with($this->equalTo('SclZfCartSagepay\BlockCipher'))
-            ->will($this->returnValue($blockCipher));
+            ->with($this->equalTo('SclZfCartSagepay\Encryption\Cipher'))
+            ->will($this->returnValue($cipher));
 
         $cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
 

@@ -19,7 +19,7 @@ class Cipher
 {
     const BLOCK_SIZE = 16;
 
-    function encrypt($data, $password)
+    public function encrypt($data, $password)
     {
         $strIV = $password;
 
@@ -37,7 +37,8 @@ class Cipher
     }
 
 
-    function decrypt($data, $password) {
+    public function decrypt($data, $password)
+    {
         if (substr($data, 0, 1) != "@") {
             throw new \RuntimeException("@ expected");
         }
@@ -67,11 +68,10 @@ class Cipher
         // Pad input to an even block size boundary
         $padlength = self::BLOCK_SIZE - (strlen($data) % self::BLOCK_SIZE);
 
-        for($i = 1; $i <= $padlength; $i++) {
+        for ($i = 1; $i <= $padlength; $i++) {
             $padding .= chr($padlength);
         }
 
         return $data . $padding;
     }
-
 }

@@ -119,8 +119,14 @@ class Sagepay implements PaymentMethodInterface
              ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
              ->add(self::CRYPT_VAR_DESCRIPTION, "blah") //$this->options->getTxDescription())
              // @todo Get server name from the environment
-             ->add(self::CRYPT_VAR_SUCCESS_URL, 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/success'))
-             ->add(self::CRYPT_VAR_FAILURE_URL, 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/failure'))
+             ->add(
+                 self::CRYPT_VAR_SUCCESS_URL,
+                 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/success')
+             )
+             ->add(
+                 self::CRYPT_VAR_FAILURE_URL,
+                 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/failure')
+             )
 
              // @todo Get this information from the user.
              ->add('BillingSurname', 'Bloggs')

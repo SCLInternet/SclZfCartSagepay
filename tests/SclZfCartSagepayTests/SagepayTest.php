@@ -17,7 +17,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
     protected $connectionOptions;
 
-    protected $blockCipher;
+    protected $cipher;
 
     protected $cryptData;
 
@@ -41,15 +41,13 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
             ->method('getConnectionOptions')
             ->will($this->returnValue($this->connectionOptions));
 
-        $this->blockCipher = $this->getMockBuilder('Zend\Crypt\BlockCipher')
-            ->disableOriginalConstructor()
-            ->getMock();
+        $this->cipher = $this->getMock('SclZfCartSagepay\Encryption\Cipher');
 
         $this->cryptData = $this->getMock('SclZfCartSagepay\Data\CryptData');
 
         $this->urlBuilder = $this->getmock('SclZfUtilities\Route\UrlBuilder');
 
-        $this->object = new Sagepay($this->options, $this->blockCipher, $this->cryptData, $this->urlBuilder);
+        $this->object = new Sagepay($this->options, $this->cipher, $this->cryptData, $this->urlBuilder);
     }
 
     /**
