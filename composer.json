@@ -18,6 +18,7 @@
         "sclinternet/scl-zf-cart": "dev-master",
         "sclinternet/scl-zf-cart-payment": "dev-master",
         "sclinternet/scl-zf-utilities": "dev-master",
+        "sclinternet/scl-zf-generic-mapper": "dev-master",
         "sclinternet/scl-contact": "dev-master"
     },
     "require-dev": {

@@ -35,26 +35,26 @@ class Sagepay implements PaymentMethodInterface
     /**
      * @var SagepayOptions
      */
-    protected $options;
+    private $options;
 
     /**
      *
      * @var Cipher
      */
-    protected $cipher;
+    private $cipher;
 
     /**
      *
      * @var CryptData
      */
-    protected $cryptData;
+    private $cryptData;
 
     /**
      * Used to create URLs for the system.
      *
      * @var UrlBuilder
      */
-    protected $urlBuilder;
+    private $urlBuilder;
 
     /**
      * @param SagepayOptions $provider
@@ -93,7 +93,7 @@ class Sagepay implements PaymentMethodInterface
      * @param string $name
      * @param string $value
      */
-    protected function addHiddenField(Form $form, $name, $value)
+    private function addHiddenField(Form $form, $name, $value)
     {
         $form->add(
             array(
@@ -110,23 +110,17 @@ class Sagepay implements PaymentMethodInterface
      * @param  OrderIntefface $order
      * @return string
      */
-    protected function getCrypt(OrderInterface $order)
+    private function getCrypt(OrderInterface $order)
     {
         $this->cryptData
              // @todo Use the SequenceGenerator
              ->add(self::CRYPT_VAR_TX_CODE, 'TEST-SCL-TX-05')
-             ->add(self::CRYPT_VAR_AMOUNT, 100) //$order->getTotal())
+             ->add(self::CRYPT_VAR_AMOUNT, $order->getTotal())
              ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
              ->add(self::CRYPT_VAR_DESCRIPTION, "blah") //$this->options->getTxDescription())
              // @todo Get server name from the environment
-             ->add(
-                 self::CRYPT_VAR_SUCCESS_URL,
-                 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/success')
-             )
-             ->add(
-                 self::CRYPT_VAR_FAILURE_URL,
-                 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/failure')
-             )
+             ->add(self::CRYPT_VAR_SUCCESS_URL, $this->getCallbackUrl('success'))
+             ->add(self::CRYPT_VAR_FAILURE_URL, $this->getCallbackUrl('failure'))
 
              // @todo Get this information from the user.
              ->add('BillingSurname', 'Bloggs')
@@ -150,6 +144,17 @@ class Sagepay implements PaymentMethodInterface
             (string) $this->cryptData,
             $this->options->getConnectionOptions()->getPassword()
         );
+    }
+
+    /**
+     * getCallbackUrl
+     *
+     * @param  string $type
+     * @return string
+     */
+    private function getCallbackUrl($type)
+    {
+        return 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/' . $type);
     }
 
     /**
