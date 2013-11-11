@@ -25,7 +25,8 @@ class SagepayFactory implements FactoryInterface
             $serviceLocator->get('SclZfCartSagepay\Options\SagepayOptions'),
             $serviceLocator->get('SclZfCartSagepay\Encryption\Cipher'),
             $serviceLocator->get('SclZfCartSagepay\Data\CryptData'),
-            $serviceLocator->get('SclZfUtilities\Route\UrlBuilder')
+            $serviceLocator->get('SclZfUtilities\Route\UrlBuilder'),
+            $serviceLocator->get('SclZfSequenceGenerator\SequenceGenerator')
         );
     }
 }

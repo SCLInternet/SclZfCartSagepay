@@ -8,6 +8,7 @@ use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
 use SclZfCartSagepay\Encryption\Cipher;
 use SclZfCartSagepay\Options\SagepayOptions;
+use SclZfSequenceGenerator\SequenceGeneratorInterface;
 use SclZfUtilities\Route\UrlBuilder;
 use Zend\Form\Form;
 
@@ -57,24 +58,31 @@ class Sagepay implements PaymentMethodInterface
     private $urlBuilder;
 
     /**
-     * @param SagepayOptions $provider
-     * @param Cipher         $cipher
-     * @param CryptData      $cryptData
-     * @param UrlBuilder     $urlBuilder
+     * Used to get numbers in a sequence.
+     *
+     * @var SequenceGeneratorInterface
+     */
+    private $sequenceGenerator;
+
+    /**
+     * @param SagepayOptions             $provider
+     * @param Cipher                     $cipher
+     * @param CryptData                  $cryptData
+     * @param UrlBuilder                 $urlBuilder
+     * @param SequenceGeneratorInterface $sequenceGenerator
      */
     public function __construct(
-        SagepayOptions $options,
-        Cipher $cipher,
-        CryptData $cryptData,
-        UrlBuilder $urlBuilder
+        SagepayOptions             $options,
+        Cipher                     $cipher,
+        CryptData                  $cryptData,
+        UrlBuilder                 $urlBuilder,
+        SequenceGeneratorInterface $sequenceGenerator
     ) {
-        $this->options = $options;
-
-        $this->cipher = $cipher;
-
-        $this->cryptData = $cryptData;
-
-        $this->urlBuilder = $urlBuilder;
+        $this->options           = $options;
+        $this->cipher            = $cipher;
+        $this->cryptData         = $cryptData;
+        $this->urlBuilder        = $urlBuilder;
+        $this->sequenceGenerator = $sequenceGenerator;
     }
 
     /**
@@ -114,7 +122,7 @@ class Sagepay implements PaymentMethodInterface
     {
         $this->cryptData
              // @todo Use the SequenceGenerator
-             ->add(self::CRYPT_VAR_TX_CODE, 'TEST-SCL-TX-05')
+             ->add(self::CRYPT_VAR_TX_CODE, $this->getTransactionId())
              ->add(self::CRYPT_VAR_AMOUNT, $order->getTotal())
              ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
              ->add(self::CRYPT_VAR_DESCRIPTION, "blah") //$this->options->getTxDescription())
@@ -144,6 +152,16 @@ class Sagepay implements PaymentMethodInterface
             (string) $this->cryptData,
             $this->options->getConnectionOptions()->getPassword()
         );
+    }
+
+    /**
+     * getTransactionId
+     *
+     * @return string
+     */
+    private function getTransactionId()
+    {
+        return 'TEST-SCL-TX-' . $this->sequenceGenerator->get('SAGEPAY-PAYMENT-TX-ID');
     }
 
     /**

@@ -67,6 +67,13 @@ class SagepayFactoryTest extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo('SclZfUtilities\Route\UrlBuilder'))
             ->will($this->returnValue($urlBuilder));
 
+        $sequenceGenerator = $this->getMock('SclZfSequenceGenerator\SequenceGeneratorInterface');
+
+        $serviceLocator->expects($this->at(4))
+            ->method('get')
+            ->with($this->equalTo('SclZfSequenceGenerator\SequenceGenerator'))
+            ->will($this->returnValue($sequenceGenerator));
+
         $sagepay = $this->object->createService($serviceLocator);
 
         $this->assertInstanceOf('SclZfCartSagepay\Sagepay', $sagepay);

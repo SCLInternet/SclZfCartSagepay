@@ -47,7 +47,13 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
 
         $this->urlBuilder = $this->getmock('SclZfUtilities\Route\UrlBuilder');
 
-        $this->object = new Sagepay($this->options, $this->cipher, $this->cryptData, $this->urlBuilder);
+        $this->object = new Sagepay(
+            $this->options,
+            $this->cipher,
+            $this->cryptData,
+            $this->urlBuilder,
+            $this->getMock('SclZfSequenceGenerator\SequenceGeneratorInterface', array('get'))
+        );
     }
 
     /**
