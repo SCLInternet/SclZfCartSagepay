@@ -2,12 +2,13 @@
 
 namespace SclZfCartSagepay;
 
-use SclZfCart\Entity\OrderInterface;
 use SclZfCartPayment\Entity\PaymentInterface;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Data\CryptData;
 use SclZfCartSagepay\Encryption\Cipher;
 use SclZfCartSagepay\Options\SagepayOptions;
+use SclZfCart\Customer\CustomerInterface;
+use SclZfCart\Entity\OrderInterface;
 use SclZfSequenceGenerator\SequenceGeneratorInterface;
 use SclZfUtilities\Route\UrlBuilder;
 use Zend\Form\Form;
@@ -65,24 +66,34 @@ class Sagepay implements PaymentMethodInterface
     private $sequenceGenerator;
 
     /**
+     * The customer object
+     *
+     * @var Customer
+     */
+    private $customer;
+
+    /**
      * @param SagepayOptions             $provider
      * @param Cipher                     $cipher
      * @param CryptData                  $cryptData
      * @param UrlBuilder                 $urlBuilder
      * @param SequenceGeneratorInterface $sequenceGenerator
+     * @param CustomerInterface          $customer
      */
     public function __construct(
         SagepayOptions             $options,
         Cipher                     $cipher,
         CryptData                  $cryptData,
         UrlBuilder                 $urlBuilder,
-        SequenceGeneratorInterface $sequenceGenerator
+        SequenceGeneratorInterface $sequenceGenerator,
+        CustomerInterface          $customer
     ) {
         $this->options           = $options;
         $this->cipher            = $cipher;
         $this->cryptData         = $cryptData;
         $this->urlBuilder        = $urlBuilder;
         $this->sequenceGenerator = $sequenceGenerator;
+        $this->customer          = $customer;
     }
 
     /**
@@ -114,6 +125,20 @@ class Sagepay implements PaymentMethodInterface
         );
     }
 
+    private function addContact(CryptData $cryptData, $prefix, CustomerInterface $customer)
+    {
+        $contact = $customer->getContact();
+        $address = $contact->getAddress();
+
+        $cryptData->add($prefix . 'Surname', $contact->getName()->getLastName());
+        $cryptData->add($prefix . 'Firstnames', $contact->getName()->getFirstName());
+        $cryptData->add($prefix . 'Address1', $address->getLine1());
+        $cryptData->add($prefix . 'Address2', $address->getLine2());
+        $cryptData->add($prefix . 'City', $address->getCity());
+        $cryptData->add($prefix . 'PostCode', $address->getPostCode()->get());
+        $cryptData->add($prefix . 'Country', $address->getCountry()->getCode());
+    }
+
     /**
      * @param  OrderIntefface $order
      * @return string
@@ -129,24 +154,10 @@ class Sagepay implements PaymentMethodInterface
              // @todo Get server name from the environment
              ->add(self::CRYPT_VAR_SUCCESS_URL, $this->getCallbackUrl('success'))
              ->add(self::CRYPT_VAR_FAILURE_URL, $this->getCallbackUrl('failure'))
-
-             // @todo Get this information from the user.
-             ->add('BillingSurname', 'Bloggs')
-             ->add('BillingFirstnames', 'Joe')
-             ->add('BillingAddress1', 'Joes House')
-             //->add('BillingAddress2', '')
-             ->add('BillingCity', 'Big Town')
-             ->add('BillingPostCode', 'SA43 1JD')
-             ->add('BillingCountry', 'GB')
-
-             ->add('DeliverySurname', 'Bloggs')
-             ->add('DeliveryFirstnames', 'Joe')
-             ->add('DeliveryAddress1', 'Joes House')
-             //->add('BillingAddress2', '')
-             ->add('DeliveryCity', 'Big Town')
-             ->add('DeliveryPostCode', 'SA43 1JD')
-             ->add('DeliveryCountry', 'GB')
              ;
+
+        $this->addContact($this->cryptData, 'Billing', $this->customer);
+        $this->addContact($this->cryptData, 'Delivery', $this->customer);
 
         return $this->cipher->encrypt(
             (string) $this->cryptData,
