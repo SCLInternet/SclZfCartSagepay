@@ -4,7 +4,7 @@ namespace SclZfCartSagepay;
 
 use SclZfCartPayment\Entity\PaymentInterface;
 use SclZfCartPayment\PaymentMethodInterface;
-use SclZfCartSagepay\Data\CryptData;
+use SclZfCartSagepay\Service\CryptService;
 use SclZfCartSagepay\Encryption\Cipher;
 use SclZfCartSagepay\Options\SagepayOptions;
 use SclZfCart\Customer\CustomerInterface;
@@ -27,13 +27,6 @@ class Sagepay implements PaymentMethodInterface
 
     const TX_TYPE_PAYMENT = 'PAYMENT';
 
-    const CRYPT_VAR_TX_CODE      = 'VendorTxCode';
-    const CRYPT_VAR_AMOUNT       = 'Amount';
-    const CRYPT_VAR_CURRENCY     = 'Currency';
-    const CRYPT_VAR_DESCRIPTION  = 'Description';
-    const CRYPT_VAR_SUCCESS_URL  = 'SuccessURL';
-    const CRYPT_VAR_FAILURE_URL  = 'FailureURL';
-
     /**
      * @var SagepayOptions
      */
@@ -47,9 +40,9 @@ class Sagepay implements PaymentMethodInterface
 
     /**
      *
-     * @var CryptData
+     * @var CryptService
      */
-    private $cryptData;
+    private $cryptService;
 
     /**
      * Used to create URLs for the system.
@@ -75,7 +68,7 @@ class Sagepay implements PaymentMethodInterface
     /**
      * @param SagepayOptions             $provider
      * @param Cipher                     $cipher
-     * @param CryptData                  $cryptData
+     * @param CryptService               $cryptService
      * @param UrlBuilder                 $urlBuilder
      * @param SequenceGeneratorInterface $sequenceGenerator
      * @param CustomerInterface          $customer
@@ -83,14 +76,14 @@ class Sagepay implements PaymentMethodInterface
     public function __construct(
         SagepayOptions             $options,
         Cipher                     $cipher,
-        CryptData                  $cryptData,
+        CryptService               $cryptService,
         UrlBuilder                 $urlBuilder,
         SequenceGeneratorInterface $sequenceGenerator,
         CustomerInterface          $customer
     ) {
         $this->options           = $options;
         $this->cipher            = $cipher;
-        $this->cryptData         = $cryptData;
+        $this->cryptService      = $cryptService;
         $this->urlBuilder        = $urlBuilder;
         $this->sequenceGenerator = $sequenceGenerator;
         $this->customer          = $customer;
@@ -125,42 +118,24 @@ class Sagepay implements PaymentMethodInterface
         );
     }
 
-    private function addContact(CryptData $cryptData, $prefix, CustomerInterface $customer)
-    {
-        $contact = $customer->getContact();
-        $address = $contact->getAddress();
-
-        $cryptData->add($prefix . 'Surname', $contact->getName()->getLastName());
-        $cryptData->add($prefix . 'Firstnames', $contact->getName()->getFirstName());
-        $cryptData->add($prefix . 'Address1', $address->getLine1());
-        $cryptData->add($prefix . 'Address2', $address->getLine2());
-        $cryptData->add($prefix . 'City', $address->getCity());
-        $cryptData->add($prefix . 'PostCode', $address->getPostCode()->get());
-        $cryptData->add($prefix . 'Country', $address->getCountry()->getCode());
-    }
-
     /**
      * @param  OrderIntefface $order
      * @return string
      */
     private function getCrypt(OrderInterface $order)
     {
-        $this->cryptData
-             // @todo Use the SequenceGenerator
-             ->add(self::CRYPT_VAR_TX_CODE, $this->getTransactionId())
-             ->add(self::CRYPT_VAR_AMOUNT, $order->getTotal())
-             ->add(self::CRYPT_VAR_CURRENCY, $this->options->getCurrency())
-             ->add(self::CRYPT_VAR_DESCRIPTION, "blah") //$this->options->getTxDescription())
-             // @todo Get server name from the environment
-             ->add(self::CRYPT_VAR_SUCCESS_URL, $this->getCallbackUrl('success'))
-             ->add(self::CRYPT_VAR_FAILURE_URL, $this->getCallbackUrl('failure'))
-             ;
-
-        $this->addContact($this->cryptData, 'Billing', $this->customer);
-        $this->addContact($this->cryptData, 'Delivery', $this->customer);
+        $data = $this->cryptService->createCryptData(
+            $order,
+            $this->customer,
+            // @todo Use the SequenceGenerator
+            $this->getTransactionId(),
+            $this->options->getCurrency(),
+            $this->getCallbackUrl('success'),
+            $this->getCallbackUrl('failure')
+        );
 
         return $this->cipher->encrypt(
-            (string) $this->cryptData,
+            $data,
             $this->options->getConnectionOptions()->getPassword()
         );
     }
@@ -183,7 +158,9 @@ class Sagepay implements PaymentMethodInterface
      */
     private function getCallbackUrl($type)
     {
-        return 'http://scl.co.uk' . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/' . $type);
+        // @todo Get server name from the environment
+        return 'http://scl.co.uk'
+            . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/' . $type);
     }
 
     /**

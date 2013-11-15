@@ -47,8 +47,8 @@ class Module implements
     {
         return array(
             'invokables' => array(
-                'SclZfCartSagepay\Data\CryptData'    => 'SclZfCartSagepay\Data\CryptData',
-                'SclZfCartSagepay\Encryption\Cipher' => 'SclZfCartSagepay\Encryption\Cipher',
+                'SclZfCartSagepay\Service\CryptService' => 'SclZfCartSagepay\Service\CryptService',
+                'SclZfCartSagepay\Encryption\Cipher'    => 'SclZfCartSagepay\Encryption\Cipher',
             ),
             'factories' => array(
                 'SclZfCartSagepay\Sagepay'                => 'SclZfCartSagepay\Service\SagepayFactory',
