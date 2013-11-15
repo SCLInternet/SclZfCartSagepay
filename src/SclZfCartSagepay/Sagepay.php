@@ -158,9 +158,11 @@ class Sagepay implements PaymentMethodInterface
      */
     private function getCallbackUrl($type)
     {
-        // @todo Get server name from the environment
-        return 'http://scl.co.uk'
-            . $this->urlBuilder->getUrl('scl-zf-cart-sagepay/' . $type);
+        return 'http://localhost/SclAdmin/public' . $this->urlBuilder->getUrl(
+            'scl-zf-cart-sagepay/' . $type //,
+            //[],
+            //['force_canonical' => true]
+        );
     }
 
     /**

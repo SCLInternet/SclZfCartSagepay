@@ -1,6 +1,6 @@
-<?php 
+<?php
 
-namespace SclZfCartSagepay;
+namespace SclZfCartSagepay\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 
@@ -14,11 +14,27 @@ class PaymentController extends AbstractActionController
 {
     public function successAction()
     {
-        return array();
+        $crypt = $this->getRequest()->getQuery('crypt');
+
+        $serviceLocator = $this->getServiceLocator();
+
+        $cipher = $serviceLocator->get('SclZfCartSagepay\Encryption\Cipher');
+        $options = $serviceLocator->get('SclZfCartSagepay\Options\SagepayOptions');
+
+        $cryptService = $serviceLocator->get('SclZfCartSagepay\Service\CryptService');
+
+        $data = $cipher->decrypt(
+            $crypt,
+            $options->getConnectionOptions()->getPassword()
+        );
+
+        var_dump($cryptService->processResponseData($data));
+
+        return [];
     }
 
     public function failureAction()
     {
-        return array();
+        return [];
     }
 }

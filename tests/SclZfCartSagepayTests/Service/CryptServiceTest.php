@@ -95,6 +95,60 @@ class CryptServiceTest extends \PHPUnit_Framework_TestCase
     }
 
     /*
+     * processResponseData()
+     */
+
+    public function test_processResponseData_return_CallbackResponse()
+    {
+        $this->assertInstanceOf(
+            'SclZfCartSagepay\Model\CallbackResponse',
+            $this->service->processResponseData('')
+        );
+    }
+
+    public function test_processResponseData_sets_venderTxCode()
+    {
+        $data = 'VendorTxCode=TX123'
+            . '&VPSTxId={123}'
+            . '&Status=OK'
+            . '&StatusDetail=0000 : The Authorisation was Successful.'
+            . '&TxAuthNo=123456'
+            . '&AVSCV2=ALL MATCH'
+            . '&AddressResult=MATCHED'
+            . '&PostCodeResult=MATCHED'
+            . '&CV2Result=MATCHED'
+            . '&GiftAid=0'
+            . '&3DSecureStatus=OK'
+            . '&CAVV=AAABBB'
+            . '&CardType=VISA'
+            . '&Last4Digits=0001'
+            . '&DeclineCode=00'
+            . '&Amount=9.99'
+            . '&BankAuthCode=999'
+            ;
+
+        $response = $this->service->processResponseData($data);
+
+        $this->assertEquals('TX123', $response->vendorTxCode);
+        $this->assertEquals('{123}', $response->vpsTxId);
+        $this->assertEquals('OK', $response->status);
+        $this->assertEquals('0000 : The Authorisation was Successful.', $response->statusDetail);
+        $this->assertEquals('123456', $response->txAuthNo);
+        $this->assertEquals('ALL MATCH', $response->avsCv2);
+        $this->assertEquals('MATCHED', $response->addressResult);
+        $this->assertEquals('MATCHED', $response->postCodeResult);
+        $this->assertEquals('MATCHED', $response->cv2Result);
+        $this->assertEquals('0', $response->giftAid);
+        $this->assertEquals('OK', $response->secureStatus3D);
+        $this->assertEquals('AAABBB', $response->cavv);
+        $this->assertEquals('VISA', $response->cardType);
+        $this->assertEquals('0001', $response->last4Digits);
+        $this->assertEquals('00', $response->declineCode);
+        $this->assertEquals('9.99', $response->amount);
+        $this->assertEquals('999', $response->bankAuthCode);
+    }
+
+    /*
      * Private methods
      */
 
