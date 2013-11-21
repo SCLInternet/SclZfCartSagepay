@@ -100,6 +100,17 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * @return string
+     */
+    public function generateTransactionId()
+    {
+        // @todo Get format string from config
+        return sprintf('SAGEPAY-%06d', $this->sequenceGenerator->get('SAGEPAY_PAYMENT_TX_ID'));
+    }
+
+    /**
      *
      * @param Form $form
      * @param string $name
@@ -120,15 +131,17 @@ class Sagepay implements PaymentMethodInterface
 
     /**
      * @param  OrderIntefface $order
+     * @param  string         $transactionId
+     *
      * @return string
      */
-    private function getCrypt(OrderInterface $order)
+    private function getCrypt(OrderInterface $order, $transactionId)
     {
         $data = $this->cryptService->createCryptData(
             $order,
             $this->customer,
             // @todo Use the SequenceGenerator
-            $this->getTransactionId(),
+            $transactionId,
             $this->options->getCurrency(),
             $this->getCallbackUrl('success'),
             $this->getCallbackUrl('failure')
@@ -137,31 +150,6 @@ class Sagepay implements PaymentMethodInterface
         return $this->cipher->encrypt(
             $data,
             $this->options->getConnectionOptions()->getPassword()
-        );
-    }
-
-    /**
-     * getTransactionId
-     *
-     * @return string
-     */
-    private function getTransactionId()
-    {
-        return 'TEST-SCL-TX-' . $this->sequenceGenerator->get('SAGEPAY-PAYMENT-TX-ID');
-    }
-
-    /**
-     * getCallbackUrl
-     *
-     * @param  string $type
-     * @return string
-     */
-    private function getCallbackUrl($type)
-    {
-        return 'http://localhost/SclAdmin/public' . $this->urlBuilder->getUrl(
-            'scl-zf-cart-sagepay/' . $type //,
-            //[],
-            //['force_canonical' => true]
         );
     }
 
@@ -181,7 +169,7 @@ class Sagepay implements PaymentMethodInterface
         $this->addHiddenField($form, self::VAR_PROTOCOL, $this->options->getVersion());
         $this->addHiddenField($form, self::VAR_TYPE, self::TX_TYPE_PAYMENT);
         $this->addHiddenField($form, self::VAR_ACCOUNT, $this->options->getAccount());
-        $this->addHiddenField($form, self::VAR_CRYPT, $this->getCrypt($order));
+        $this->addHiddenField($form, self::VAR_CRYPT, $this->getCrypt($order, $payment->getTransactionId()));
     }
 
     /**
@@ -193,4 +181,20 @@ class Sagepay implements PaymentMethodInterface
     public function complete(array $data)
     {
     }
+
+    /**
+     * getCallbackUrl
+     *
+     * @param  string $type
+     * @return string
+     */
+    private function getCallbackUrl($type)
+    {
+        return 'http://localhost/SclAdmin/public' . $this->urlBuilder->getUrl(
+            'scl-zf-cart-sagepay/' . $type //,
+            //[],
+            //['force_canonical' => true]
+        );
+    }
+
 }

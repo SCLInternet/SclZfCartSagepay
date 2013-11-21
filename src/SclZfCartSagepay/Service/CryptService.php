@@ -42,6 +42,13 @@ class CryptService
         ));
     }
 
+    /**
+     * Takes a response string and proccesses it into a CallbackResponse object.
+     *
+     * @param  string $data
+     *
+     * @return CallbackResponse
+     */
     public function processResponseData($data)
     {
         /*

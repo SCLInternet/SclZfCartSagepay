@@ -23,13 +23,13 @@ class Module implements
      */
     public function getAutoloaderConfig()
     {
-        return array(
-            'Zend\Loader\StandardAutoloader' => array(
-                'namespaces' => array(
+        return [
+            'Zend\Loader\StandardAutoloader' => [
+                'namespaces' => [
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
     }
 
     /**
@@ -45,15 +45,22 @@ class Module implements
      */
     public function getServiceConfig()
     {
-        return array(
-            'invokables' => array(
+        return [
+            'invokables' => [
                 'SclZfCartSagepay\Service\CryptService' => 'SclZfCartSagepay\Service\CryptService',
                 'SclZfCartSagepay\Encryption\Cipher'    => 'SclZfCartSagepay\Encryption\Cipher',
-            ),
-            'factories' => array(
+            ],
+            'factories' => [
                 'SclZfCartSagepay\Sagepay'                => 'SclZfCartSagepay\Service\SagepayFactory',
                 'SclZfCartSagepay\Options\SagepayOptions' => 'SclZfCartSagepay\Service\SagepayOptionsFactory',
-            ),
-        );
+                'SclZfCartSagepay\Service\CallbackService' => function ($sm) {
+                    return new \SclZfCartSagepay\Service\CallbackService(
+                        $sm->get('SclZfCartSagepay\Encryption\Cipher'),
+                        $sm->get('SclZfCartSagepay\Options\SagepayOptions')->getConnectionOptions(),
+                        $sm->get('SclZfCartSagepay\Service\CryptService')
+                    );
+                },
+            ],
+        ];
     }
 }

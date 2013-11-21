@@ -18,17 +18,9 @@ class PaymentController extends AbstractActionController
 
         $serviceLocator = $this->getServiceLocator();
 
-        $cipher = $serviceLocator->get('SclZfCartSagepay\Encryption\Cipher');
-        $options = $serviceLocator->get('SclZfCartSagepay\Options\SagepayOptions');
+        $service = $serviceLocator->get('SclZfCartSagepay\Service\CallbackService');
 
-        $cryptService = $serviceLocator->get('SclZfCartSagepay\Service\CryptService');
-
-        $data = $cipher->decrypt(
-            $crypt,
-            $options->getConnectionOptions()->getPassword()
-        );
-
-        var_dump($cryptService->processResponseData($data));
+        $service->processResponse($crypt);
 
         return [];
     }
