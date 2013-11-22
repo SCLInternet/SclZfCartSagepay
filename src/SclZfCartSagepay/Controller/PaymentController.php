@@ -20,9 +20,12 @@ class PaymentController extends AbstractActionController
 
         $service = $serviceLocator->get('SclZfCartSagepay\Service\CallbackService');
 
-        $service->processResponse($crypt);
+        $payment = $service->processResponse($crypt);
 
-        return [];
+        return $this->redirect()->toRoute(
+            'cart/complete',
+            ['id', $payment->getOrder()->getId()]
+        );
     }
 
     public function failureAction()

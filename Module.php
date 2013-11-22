@@ -57,7 +57,9 @@ class Module implements
                     return new \SclZfCartSagepay\Service\CallbackService(
                         $sm->get('SclZfCartSagepay\Encryption\Cipher'),
                         $sm->get('SclZfCartSagepay\Options\SagepayOptions')->getConnectionOptions(),
-                        $sm->get('SclZfCartSagepay\Service\CryptService')
+                        $sm->get('SclZfCartSagepay\Service\CryptService'),
+                        $sm->get('SclZfCartPayment\Mapper\PaymentMapperInterface'),
+                        $sm->get('SclZfCartPayment\Service\PaymentService')
                     );
                 },
             ],

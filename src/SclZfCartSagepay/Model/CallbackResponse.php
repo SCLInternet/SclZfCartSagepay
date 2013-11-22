@@ -74,6 +74,14 @@ class CallbackResponse
      */
     const STATUS_ERROR = 'ERROR';
 
+    /**
+     * List of successful statuses.
+     */
+    private static $successStates = [
+        self::STATUS_OK,
+        self::STATUS_AUTHENTICATED,
+    ];
+
     private $vendorTxCode;
 
     private $vpsTxId;
@@ -146,8 +154,25 @@ class CallbackResponse
         $this->bankAuthCode   = $bankAuthCode;
     }
 
+    /**
+     * Make properties read only.
+     *
+     * @param  string $name
+     *
+     * @return mixed
+     */
     public function __get($name)
     {
         return $this->$name;
+    }
+
+    /**
+     * Was the transaction a success?
+     *
+     * @return bool
+     */
+    public function isSuccess()
+    {
+        return in_array($this->status, self::$successStates);
     }
 }
