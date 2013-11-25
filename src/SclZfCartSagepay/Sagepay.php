@@ -196,5 +196,4 @@ class Sagepay implements PaymentMethodInterface
             //['force_canonical' => true]
         );
     }
-
 }

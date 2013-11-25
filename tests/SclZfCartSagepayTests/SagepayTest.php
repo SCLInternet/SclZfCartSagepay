@@ -2,7 +2,7 @@
 namespace SclZfCartSagepayTests;
 
 use SclContact\Contact;
-use SclZfCartSagepayTests\TestAssets\TestCustomerLocator;
+use SclZfCartTests\TestAssets\TestCustomerLocator;
 use SclZfCartSagepay\Options\ConnectionOptions;
 use SclZfCartSagepay\Options\SagepayOptions;
 use SclZfCartSagepay\Sagepay;

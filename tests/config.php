@@ -6,7 +6,7 @@ return [
             'SclZfCart\Customer\CustomerLocatorInterface' => 'test_customer_locator',
         ],
         'invokables' => [
-            'test_customer_locator' => 'SclZfCartSagepayTests\TestAssets\TestCustomerLocator',
+            'test_customer_locator' => 'SclZfCartTests\TestAssets\TestCustomerLocator',
         ],
     ],
 ];
