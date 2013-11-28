@@ -23,8 +23,8 @@ class PaymentController extends AbstractActionController
         $payment = $service->processResponse($crypt);
 
         return $this->redirect()->toRoute(
-            'cart/complete',
-            ['id', $payment->getOrder()->getId()]
+            'cart/checkout/complete',
+            ['id' => $payment->getOrder()->getId()]
         );
     }
 
