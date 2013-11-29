@@ -143,8 +143,8 @@ class Sagepay implements PaymentMethodInterface
             // @todo Use the SequenceGenerator
             $transactionId,
             $this->options->getCurrency(),
-            $this->getCallbackUrl('success'),
-            $this->getCallbackUrl('failure')
+            $this->getCallbackUrl(),
+            $this->getCallbackUrl()
         );
 
         return $this->cipher->encrypt(
@@ -191,7 +191,7 @@ class Sagepay implements PaymentMethodInterface
     private function getCallbackUrl($type)
     {
         return 'http://localhost/SclAdmin/public' . $this->urlBuilder->getUrl(
-            'scl-zf-cart-sagepay/' . $type //,
+            'scl-zf-cart-sagepay/callback' //,
             //[],
             //['force_canonical' => true]
         );

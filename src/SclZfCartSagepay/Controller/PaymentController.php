@@ -12,7 +12,7 @@ use Zend\Mvc\Controller\AbstractActionController;
  */
 class PaymentController extends AbstractActionController
 {
-    public function successAction()
+    public function callbackAction()
     {
         $crypt = $this->getRequest()->getQuery('crypt');
 
@@ -26,10 +26,5 @@ class PaymentController extends AbstractActionController
             'cart/checkout/complete',
             ['id' => $payment->getOrder()->getId()]
         );
-    }
-
-    public function failureAction()
-    {
-        return [];
     }
 }
