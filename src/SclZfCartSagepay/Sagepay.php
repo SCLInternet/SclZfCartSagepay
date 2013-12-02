@@ -185,10 +185,9 @@ class Sagepay implements PaymentMethodInterface
     /**
      * getCallbackUrl
      *
-     * @param  string $type
      * @return string
      */
-    private function getCallbackUrl($type)
+    private function getCallbackUrl()
     {
         return 'http://localhost/SclAdmin/public' . $this->urlBuilder->getUrl(
             'scl-zf-cart-sagepay/callback' //,

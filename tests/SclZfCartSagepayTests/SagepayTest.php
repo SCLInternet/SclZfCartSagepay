@@ -157,7 +157,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->urlBuilder
              ->expects($this->at(0))
              ->method('getUrl')
-             ->with($this->equalTo('scl-zf-cart-sagepay/success'));
+             ->with($this->equalTo('scl-zf-cart-sagepay/callback'));
 
         $this->sagepay->updateCompleteForm(
             new Form(),
@@ -171,7 +171,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->urlBuilder
              ->expects($this->at(1))
              ->method('getUrl')
-             ->with($this->equalTo('scl-zf-cart-sagepay/failure'));
+             ->with($this->equalTo('scl-zf-cart-sagepay/callback'));
 
         $this->sagepay->updateCompleteForm(
             new Form(),
@@ -192,12 +192,12 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->urlBuilder
              ->expects($this->at(0))
              ->method('getUrl')
-             ->will($this->returnValue('/success'));
+             ->will($this->returnValue('/callback'));
 
         $this->urlBuilder
              ->expects($this->at(1))
              ->method('getUrl')
-             ->will($this->returnValue('/failure'));
+             ->will($this->returnValue('/callback'));
 
         $this->cryptService
              ->expects($this->once())
@@ -207,7 +207,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
                 $this->identicalTo($this->customer),
                 $this->equalTo($transactionId),
                 $this->equalTo(self::TEST_CURRENCY),
-                $this->equalTo('http://scl.co.uk/success'),
+                $this->equalTo('http://scl.co.uk/sagepay/callback'),
                 $this->equalTo('http://scl.co.uk/failure')
              );
 
