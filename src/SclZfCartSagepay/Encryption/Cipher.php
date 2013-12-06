@@ -2,8 +2,6 @@
 
 namespace SclZfCartSagepay\Encryption;
 
-use Zend\Crypt\BlockCipher;
-
 /**
  * Encryption class for the sagepay crypt.
  *
