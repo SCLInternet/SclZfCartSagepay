@@ -51,46 +51,9 @@ class CryptService
      */
     public function processResponseData($data)
     {
-        /*
-        VendorTxCode=TEST-SCL-TX-21
-        VPSTxId={FA960C35-1331-FDD4-1611-447B4C76038C}
-        Status=OK
-        StatusDetail=0000 : The Authorisation was Successful.
-        TxAuthNo=5820406
-        AVSCV2=ALL MATCH
-        AddressResult=MATCHED
-        PostCodeResult=MATCHED
-        CV2Result=MATCHED
-        GiftAid=0
-        3DSecureStatus=OK
-        CAVV=AAABARR5kwAAAAAAAAAAAAAAAAA=
-        CardType=VISA
-        Last4Digits=0006
-        DeclineCode=00
-        Amount=11.99
-        BankAuthCode=999777
-        */
         parse_str($data, $values);
 
-        return new CallbackResponse(
-            $this->valueIfExists($values, 'VendorTxCode'),
-            $this->valueIfExists($values, 'VPSTxId'),
-            $this->valueIfExists($values, 'Status'),
-            $this->valueIfExists($values, 'StatusDetail'),
-            $this->valueIfExists($values, 'TxAuthNo'),
-            $this->valueIfExists($values, 'AVSCV2'),
-            $this->valueIfExists($values, 'AddressResult'),
-            $this->valueIfExists($values, 'PostCodeResult'),
-            $this->valueIfExists($values, 'CV2Result'),
-            $this->valueIfExists($values, 'GiftAid'),
-            $this->valueIfExists($values, '3DSecureStatus'),
-            $this->valueIfExists($values, 'CAVV'),
-            $this->valueIfExists($values, 'CardType'),
-            $this->valueIfExists($values, 'Last4Digits'),
-            $this->valueIfExists($values, 'DeclineCode'),
-            $this->valueIfExists($values, 'Amount'),
-            $this->valueIfExists($values, 'BankAuthCode')
-        );
+        return CallbackResponse::createFromArray($values);
     }
 
     private function valueIfExists(array $data, $key)
