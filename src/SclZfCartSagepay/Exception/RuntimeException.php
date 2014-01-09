@@ -2,7 +2,7 @@
 
 namespace SclZfCartSagepay\Exception;
 
-use SclZfCartPayment\Entity\PaymentInterface;
+use SclZfCartPayment\Entity\Payment;
 
 class RuntimeException extends \RuntimeException implements
     ExceptionInterface
@@ -25,11 +25,9 @@ class RuntimeException extends \RuntimeException implements
     /**
      * 'Payment "%s" has already been actioned.'
      *
-     * @param  PaymentInterface $payment
-     *
      * @return RuntimeException
      */
-    public static function paymentHasCompleted(PaymentInterface $payment)
+    public static function paymentHasCompleted(Payment $payment)
     {
         return new self(sprintf(
             'Payment "%s" has already been actioned.',

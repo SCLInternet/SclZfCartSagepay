@@ -3,7 +3,7 @@
 namespace SclZfCartSagepay\Service;
 
 use SclZfCart\Customer\CustomerInterface;
-use SclZfCart\Entity\OrderInterface;
+use SclZfCart\Entity\Order;
 use SclZfCartSagepay\Model\CallbackResponse;
 
 class CryptService
@@ -11,17 +11,15 @@ class CryptService
     /**
      * Build a crypt data block for Sagepay.
      *
-     * @param  OrderInterface    $order
-     * @param  CustomerInterface $customer
-     * @param  string            $transactionId
-     * @param  string            $currency
-     * @param  string            $successUrl
-     * @param  string            $failureUrl
+     * @param  string $transactionId
+     * @param  string $currency
+     * @param  string $successUrl
+     * @param  string $failureUrl
      *
      * @return array
      */
     public function createCryptData(
-        OrderInterface $order,
+        Order $order,
         CustomerInterface $customer,
         $transactionId,
         $currency,
@@ -31,7 +29,7 @@ class CryptService
         return $this->getVarString(array_merge(
             [
                 'VendorTxCode' => $transactionId,
-                'Amount'       => $order->getTotal(),
+                'Amount'       => $order->getTotal()->getValue(),
                 'Currency'     => $currency,
                 'Description'  => 'Online Order',
                 'SuccessURL'   => $successUrl,
@@ -119,8 +117,7 @@ class CryptService
     /**
      * Creates a dataset for a set of contact details.
      *
-     * @param  string            $prefix
-     * @param  CustomerInterface $customer
+     * @param  string $prefix
      *
      * @return array
      */

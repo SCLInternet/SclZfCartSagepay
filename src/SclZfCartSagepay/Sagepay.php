@@ -2,21 +2,19 @@
 
 namespace SclZfCartSagepay;
 
-use SclZfCartPayment\Entity\PaymentInterface;
+use SclZfCartPayment\Entity\Payment;
 use SclZfCartPayment\PaymentMethodInterface;
 use SclZfCartSagepay\Service\CryptService;
 use SclZfCartSagepay\Encryption\Cipher;
 use SclZfCartSagepay\Options\SagepayOptions;
 use SclZfCart\Customer\CustomerInterface;
-use SclZfCart\Entity\OrderInterface;
+use SclZfCart\Entity\Order;
 use SclZfSequenceGenerator\SequenceGeneratorInterface;
 use SclZfUtilities\Route\UrlBuilder;
 use Zend\Form\Form;
 
 /**
  * The payment method to intgrate Sagepay into SclZfCartPayment
- *
- * @author Tom Oram <tom@scl.co.uk>
  */
 class Sagepay implements PaymentMethodInterface
 {
@@ -45,34 +43,20 @@ class Sagepay implements PaymentMethodInterface
     private $cryptService;
 
     /**
-     * Used to create URLs for the system.
-     *
      * @var UrlBuilder
      */
     private $urlBuilder;
 
     /**
-     * Used to get numbers in a sequence.
-     *
      * @var SequenceGeneratorInterface
      */
     private $sequenceGenerator;
 
     /**
-     * The customer object
-     *
      * @var Customer
      */
     private $customer;
 
-    /**
-     * @param SagepayOptions             $provider
-     * @param Cipher                     $cipher
-     * @param CryptService               $cryptService
-     * @param UrlBuilder                 $urlBuilder
-     * @param SequenceGeneratorInterface $sequenceGenerator
-     * @param CustomerInterface          $customer
-     */
     public function __construct(
         SagepayOptions             $options,
         Cipher                     $cipher,
@@ -90,8 +74,6 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return string
      */
     public function name()
@@ -100,8 +82,6 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @return string
      */
     public function generateTransactionId()
@@ -111,8 +91,6 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     *
-     * @param Form $form
      * @param string $name
      * @param string $value
      */
@@ -130,12 +108,11 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * @param  OrderIntefface $order
-     * @param  string         $transactionId
+     * @param string $transactionId
      *
      * @return string
      */
-    private function getCrypt(OrderInterface $order, $transactionId)
+    private function getCrypt(Order $order, $transactionId)
     {
         $data = $this->cryptService->createCryptData(
             $order,
@@ -154,15 +131,9 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * @param  Form            $form
-     * @param  OrderInterface  $order
-     * @param  PaymentInterfce $payment
-     * @return void
      * @todo Use a CompleteForm object instead of Form
      */
-    public function updateCompleteForm(Form $form, OrderInterface $order, PaymentInterface $payment)
+    public function updateCompleteForm(Form $form, Order $order, Payment $payment)
     {
         $form->setAttribute('action', $this->options->getConnectionOptions()->getUrl());
 
@@ -173,9 +144,8 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @param array $data
+     *
      * @return boolean Return true if the payment was successful
      */
     public function complete(array $data)
@@ -183,9 +153,8 @@ class Sagepay implements PaymentMethodInterface
     }
 
     /**
-     * getCallbackUrl
+     * @param string $type
      *
-     * @param  string $type
      * @return string
      */
     private function getCallbackUrl($type)

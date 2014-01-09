@@ -20,6 +20,8 @@
         "sclinternet/scl-zf-utilities": "dev-master",
         "sclinternet/scl-zf-generic-mapper": "dev-master",
         "sclinternet/scl-zf-sequence-generator": "dev-master",
+        "sclinternet/currency": "dev-master",
+        "sclinternet/scl-zf-currency": "dev-master",
         "sclinternet/scl-contact": "dev-master"
     },
     "require-dev": {

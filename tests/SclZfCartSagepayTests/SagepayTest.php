@@ -131,7 +131,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->sagepay->updateCompleteForm(
             $form,
             new Order(),
-            $this->getMock('SclZfCartPayment\Entity\PaymentInterface')
+            $this->getMock('SclZfCartPayment\Entity\Payment')
         );
 
         $this->assertEquals(self::TEST_URL, $form->getAttribute('action'));
@@ -162,7 +162,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->sagepay->updateCompleteForm(
             new Form(),
             new Order(),
-            $this->getMock('SclZfCartPayment\Entity\PaymentInterface')
+            $this->getMock('SclZfCartPayment\Entity\Payment')
         );
     }
 
@@ -176,7 +176,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->sagepay->updateCompleteForm(
             new Form(),
             new Order(),
-            $this->getMock('SclZfCartPayment\Entity\PaymentInterface')
+            $this->getMock('SclZfCartPayment\Entity\Payment')
         );
     }
 
@@ -231,7 +231,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->sagepay->updateCompleteForm(
             new Form(),
             new Order(),
-            $this->getMock('SclZfCartPayment\Entity\PaymentInterface')
+            $this->getMock('SclZfCartPayment\Entity\Payment')
         );
     }
 
@@ -302,7 +302,7 @@ class SagepayTest extends \PHPUnit_Framework_TestCase
         $this->sagepay->updateCompleteForm(
             $form,
             new Order(),
-            $this->getMock('SclZfCartPayment\Entity\PaymentInterface')
+            $this->getMock('SclZfCartPayment\Entity\Payment')
         );
 
         $element = $form->get($elementName);

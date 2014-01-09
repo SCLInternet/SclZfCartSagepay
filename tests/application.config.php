@@ -11,6 +11,7 @@ return array(
         'SclZfCart',
         'SclZfCartPayment',
         'SclZfCartSagepay',
+        'SCL\ZF2\Currency',
     ),
     'module_listener_options' => array(
         'config_glob_paths'    => array(

@@ -10,6 +10,7 @@ use SclContact\Postcode;
 use SclContact\Country;
 use SclZfCart\Entity\Order;
 use SclZfCart\Entity\OrderItem;
+use SCL\Currency\TaxedPriceFactory;
 
 /**
  * Unit tests for {@see CryptService}.
@@ -63,12 +64,14 @@ class CryptServiceTest extends \PHPUnit_Framework_TestCase
         $successUrl    = 'http://success';
         $failureUrl    = 'http://fail';
 
+        $factory = TaxedPriceFactory::createDefaultInstance();
+
         $order = new Order();
         $item = new OrderItem();
+        $item->setPriceFactory($factory);
         $order->addItem($item);
 
-        $item->setPrice(10);
-        $item->setTax(2);
+        $item->setPrice($factory->createFromValues(10, 2));
 
         // When
 
