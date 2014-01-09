@@ -116,42 +116,43 @@ class CallbackResponse
 
     private $bankAuthCode;
 
-    public function __construct(
-        $vendorTxCode,
-        $vpsTxId,
-        $status,
-        $statusDetail,
-        $txAuthNo,
-        $avsCv2,
-        $addressResult,
-        $postCodeResult,
-        $cv2Result,
-        $giftAid,
-        $secureStatus3D,
-        $cavv,
-        $cardType,
-        $last4Digits,
-        $declineCode,
-        $amount,
-        $bankAuthCode
-    ) {
-        $this->vendorTxCode   = $vendorTxCode;
-        $this->vpsTxId        = $vpsTxId;
-        $this->status         = $status;
-        $this->statusDetail   = $statusDetail;
-        $this->txAuthNo       = $txAuthNo;
-        $this->avsCv2         = $avsCv2;
-        $this->addressResult  = $addressResult;
-        $this->postCodeResult = $postCodeResult;
-        $this->cv2Result      = $cv2Result;
-        $this->giftAid        = $giftAid;
-        $this->secureStatus3D = $secureStatus3D;
-        $this->cavv           = $cavv;
-        $this->cardType       = $cardType;
-        $this->last4Digits    = $last4Digits;
-        $this->declineCode    = $declineCode;
-        $this->amount         = $amount;
-        $this->bankAuthCode   = $bankAuthCode;
+    /**
+     * Stop instance from being created explicitly.
+     */
+    private function __construct()
+    {
+    }
+
+    /**
+     * Create an instance from a URL encoded string
+     *
+     * @param  array $values
+     *
+     * @return CallbackResponse
+     */
+    public static function createFromArray(array $values)
+    {
+        $response = new self();
+
+        $response->vendorTxCode   = self::getValueFromArray($values, 'VendorTxCode');
+        $response->vpsTxId        = self::getValueFromArray($values, 'VPSTxId');
+        $response->status         = self::getValueFromArray($values, 'Status');
+        $response->statusDetail   = self::getValueFromArray($values, 'StatusDetail');
+        $response->txAuthNo       = self::getValueFromArray($values, 'TxAuthNo');
+        $response->avsCv2         = self::getValueFromArray($values, 'AVSCV2');
+        $response->addressResult  = self::getValueFromArray($values, 'AddressResult');
+        $response->postCodeResult = self::getValueFromArray($values, 'PostCodeResult');
+        $response->cv2Result      = self::getValueFromArray($values, 'CV2Result');
+        $response->giftAid        = self::getValueFromArray($values, 'GiftAid');
+        $response->secureStatus3D = self::getValueFromArray($values, '3DSecureStatus');
+        $response->cavv           = self::getValueFromArray($values, 'CAVV');
+        $response->cardType       = self::getValueFromArray($values, 'CardType');
+        $response->last4Digits    = self::getValueFromArray($values, 'Last4Digits');
+        $response->declineCode    = self::getValueFromArray($values, 'DeclineCode');
+        $response->amount         = self::getValueFromArray($values, 'Amount');
+        $response->bankAuthCode   = self::getValueFromArray($values, 'BankAuthCode');
+
+        return $response;
     }
 
     /**
@@ -175,4 +176,18 @@ class CallbackResponse
     {
         return in_array($this->status, self::$successStates);
     }
+
+    /**
+     * Returns a value from the array or null if the value doesn't exist,
+     *
+     * @param  string[] $data
+     * @param  string   $key
+     *
+     * @return string|null
+     */
+    private static function getValueFromArray(array $data, $key)
+    {
+        return isset($data[$key]) ? $data[$key] : null;
+    }
+
 }

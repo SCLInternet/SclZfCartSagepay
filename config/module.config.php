@@ -11,27 +11,17 @@ return array(
             'scl-zf-cart-sagepay' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/sagepay-callback',
+                    'route' => '/sagepay',
                 ),
                 'may_terminate' => false,
                 'child_routes' => array(
-                    'success' => array(
+                    'callback' => array(
                         'type' => 'Literal',
                         'options' => array(
-                            'route' => '/success',
+                            'route' => '/callback',
                             'defaults' => array(
                                 'controller' => 'SclZfCartSagepay\Controller\Payment',
-                                'action'     => 'success',
-                            ),
-                        ),
-                    ),
-                    'failure' => array(
-                        'type' => 'Literal',
-                        'options' => array(
-                            'route' => '/failure',
-                            'defaults' => array(
-                                'controller' => 'SclZfCartSagepay\Controller\Payment',
-                                'action'     => 'failure',
+                                'action'     => 'callback',
                             ),
                         ),
                     ),
